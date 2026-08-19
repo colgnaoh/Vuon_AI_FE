@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { adminService } from '@/services/adminService';
 import { profileService } from '@/services/profileService';
 import { UserProfile, GlobalRole } from '@/types';
-import { Users, Shield, UserCheck } from 'lucide-react';
 
 export const AdminUsersPage: React.FC = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -27,7 +26,7 @@ export const AdminUsersPage: React.FC = () => {
   const handleRoleChange = async (userId: string, newRole: GlobalRole) => {
     try {
       await adminService.updateUserRole(userId, newRole);
-      alert('Đã cập nhật role thành công!');
+      alert('Role updated successfully!');
       fetchUsers();
     } catch {
       // Handled
@@ -39,23 +38,23 @@ export const AdminUsersPage: React.FC = () => {
       
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-          <Users className="w-6 h-6 text-emerald-600" /> Quản Lý Thành Viên & Global Roles
+          Members & global roles
         </h1>
-        <p className="text-xs text-slate-600 mt-1">Cấp quyền hoặc thay đổi quyền vai trò người dùng hệ thống.</p>
+        <p className="text-xs text-slate-600 mt-1">Grant or update system permissions.</p>
       </div>
 
       {loading ? (
-        <div className="text-center py-20 text-slate-500 text-sm">Đang tải danh sách thành viên...</div>
+        <div className="text-center py-20 text-slate-500 text-sm">Loading member directory...</div>
       ) : (
         <div className="tech-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-slate-700">
               <thead className="bg-slate-50 text-xs uppercase font-mono font-bold text-slate-600 border-b border-slate-200">
                 <tr>
-                  <th className="px-6 py-4">Thành Viên</th>
-                  <th className="px-6 py-4">Kỹ Năng Đã Đăng Ký</th>
-                  <th className="px-6 py-4">Global Role Hiện Tại</th>
-                  <th className="px-6 py-4 text-right">Cập Nhật Quyền Hạn</th>
+                  <th className="px-6 py-4">Member</th>
+                  <th className="px-6 py-4">Registered skills</th>
+                  <th className="px-6 py-4">Current global role</th>
+                  <th className="px-6 py-4 text-right">Update permissions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
@@ -104,10 +103,10 @@ export const AdminUsersPage: React.FC = () => {
                         onChange={(e) => handleRoleChange(u.id, e.target.value as GlobalRole)}
                         className="px-3 py-1.5 bg-slate-50 border border-slate-300 text-xs font-mono font-bold text-slate-900 rounded focus:outline-none"
                       >
-                        <option value="Visitor">Visitor (Khách)</option>
-                        <option value="Member">Member (Thành viên)</option>
-                        <option value="LabManager">LabManager (Quản lý Lab)</option>
-                        <option value="Admin">Admin (Quản trị viên)</option>
+                        <option value="Visitor">Visitor</option>
+                        <option value="Member">Member</option>
+                        <option value="LabManager">LabManager</option>
+                        <option value="Admin">Admin</option>
                       </select>
                     </td>
 

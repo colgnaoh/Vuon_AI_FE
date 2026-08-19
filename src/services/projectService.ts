@@ -4,9 +4,9 @@ import { Project, ProjectStatus } from '@/types';
 export const mockProjects: Project[] = [
   {
     id: 'proj-01',
-    title: 'Autonomous Mobile Robot (AMR) trong Nhà Kho Thông Minh',
-    summary: 'Robot di động tự hành sử dụng thuật toán SLAM, LiDAR 2D và mô-đun dẫn đường ROS2 Nav2.',
-    description: 'Dự án nghiên cứu và phát triển nguyên mẫu xe AMR vận chuyển hàng hóa trong kho mini của VUON AI SPACE. Tích hợp camera RealSense tránh vật cản động và hệ thống định vị LiDAR.',
+    title: 'Autonomous Mobile Robot (AMR) for a Smart Warehouse',
+    summary: 'An autonomous mobile robot using SLAM, 2D LiDAR and the ROS2 Nav2 navigation stack.',
+    description: 'Research and build an AMR prototype for moving goods through the VUON AI SPACE mini warehouse. Integrate a RealSense camera for dynamic obstacle avoidance with LiDAR localization.',
     leaderId: 'usr-104',
     leaderName: 'Hoàng Nam',
     leaderAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
@@ -44,9 +44,9 @@ export const mockProjects: Project[] = [
   },
   {
     id: 'proj-02',
-    title: 'Edge AI Camera Giám Sát An Toàn Phòng Lab',
-    summary: 'Hệ thống nhận diện hành vi nguy hiểm (không đeo kính bảo hộ, phát hiện khói lửa) thời gian thực.',
-    description: 'Triển khai mô hình YOLOv8 Nano nén tối ưu qua TensorRT trên thiết bị NVIDIA Jetson Orin Nano, truyền cảnh báo qua Webhook Discord/Telegram.',
+    title: 'Edge AI Camera for Lab Safety Monitoring',
+    summary: 'A real-time system for detecting unsafe behavior, such as missing safety glasses, smoke and fire.',
+    description: 'Deploy an optimized YOLOv8 Nano model through TensorRT on NVIDIA Jetson Orin Nano, sending alerts through Discord or Telegram webhooks.',
     leaderId: 'usr-101',
     leaderName: 'Alex Nguyễn',
     leaderAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',

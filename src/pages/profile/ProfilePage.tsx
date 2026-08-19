@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { profileService } from '@/services/profileService';
 import { UserProfile } from '@/types';
-import { User, Edit3, Save, X, Plus, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ErrorState, LoadingState } from '@/components/AsyncState';
 
 export const ProfilePage: React.FC = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   // Form State
   const [fullName, setFullName] = useState('');
@@ -23,6 +24,7 @@ export const ProfilePage: React.FC = () => {
 
   const fetchProfile = async () => {
     setLoading(true);
+    setError('');
     try {
       const data = await profileService.getMyProfile();
       setProfile(data);
@@ -31,7 +33,7 @@ export const ProfilePage: React.FC = () => {
       setLookingFor(data.lookingFor || '');
       setSkills(data.skills || []);
     } catch {
-      // Handled
+      setError('Your profile could not be loaded.');
     } finally {
       setLoading(false);
     }
@@ -64,15 +66,14 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return <div className="text-center py-20 text-slate-500 text-sm">Đang tải thông tin hồ sơ...</div>;
-  }
+  if (loading) return <LoadingState message="Loading your profile..." />;
+  if (error || !profile) return <ErrorState message={error || 'No profile information available.'} onRetry={fetchProfile} />;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
       {/* Header Profile Banner */}
-      <div className="tech-card p-6 md:p-8 space-y-6 relative overflow-hidden bg-gradient-to-r from-emerald-50 via-teal-50 to-[#FFFFFF] border-emerald-200">
+      <div className="tech-card p-6 md:p-8 space-y-6 relative overflow-hidden bg-white border-emerald-200">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
           <div className="flex items-center gap-4">
             {profile?.avatarUrl ? (
@@ -103,11 +104,11 @@ export const ProfilePage: React.FC = () => {
           >
             {isEditing ? (
               <>
-                <X className="w-4 h-4 text-rose-600" /> Hủy Chỉnh Sửa
+                 Cancel editing
               </>
             ) : (
               <>
-                <Edit3 className="w-4 h-4 text-emerald-600" /> Cập Nhật Hồ Sơ
+                 Edit profile
               </>
             )}
           </button>
@@ -117,40 +118,43 @@ export const ProfilePage: React.FC = () => {
         {isEditing ? (
           <form onSubmit={handleSave} className="space-y-6 pt-2">
             <div>
-              <label className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Họ và Tên</label>
+              <label htmlFor="profile-name" className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Full name</label>
               <input
+                id="profile-name"
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-emerald-500"
+                className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Giới thiệu bản thân (Bio)</label>
+              <label htmlFor="profile-bio" className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">About you (bio)</label>
               <textarea
+                id="profile-bio"
                 rows={3}
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                placeholder="VD: AI Engineer | Chuyên lập trình Computer Vision, ROS2 & NVIDIA Jetson..."
-                className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-emerald-500"
+                placeholder="e.g. AI Engineer | Computer Vision, ROS2 & NVIDIA Jetson..."
+                className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Đang Tìm Kiếm (Looking For)</label>
+              <label htmlFor="profile-looking-for" className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Looking for</label>
               <input
+                id="profile-looking-for"
                 type="text"
                 value={lookingFor}
                 onChange={(e) => setLookingFor(e.target.value)}
-                placeholder="VD: Cần 1 bạn lập trình ESP32 làm đồ án Robot Vision..."
-                className="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-emerald-500"
+                placeholder="e.g. An ESP32 developer for a robot vision project..."
+                className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
               />
             </div>
 
             {/* Skills Editor */}
             <div className="space-y-2">
-              <label className="block text-xs font-mono text-slate-700 uppercase font-bold">Kỹ năng công nghệ (Skill Tags)</label>
+              <label htmlFor="profile-new-skill" className="block text-xs font-mono text-slate-700 uppercase font-bold">Technical skills</label>
               <div className="flex flex-wrap gap-2 mb-2">
                 {skills.map((skill) => (
                   <span
@@ -161,9 +165,10 @@ export const ProfilePage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => handleRemoveSkill(skill)}
+                      aria-label={`Remove skill ${skill}`}
                       className="hover:text-rose-600"
                     >
-                      <X className="w-3 h-3" />
+                      remove
                     </button>
                   </span>
                 ))}
@@ -171,18 +176,19 @@ export const ProfilePage: React.FC = () => {
 
               <div className="flex gap-2">
                 <input
+                  id="profile-new-skill"
                   type="text"
                   value={newSkillInput}
                   onChange={(e) => setNewSkillInput(e.target.value)}
-                  placeholder="Thêm skill mới (vd: PyTorch, STM32)..."
-                  className="flex-1 px-3 py-1.5 bg-slate-50 border border-slate-300 rounded text-xs text-slate-900 focus:outline-none focus:border-emerald-500"
+                  placeholder="Add a skill (e.g. PyTorch, STM32)..."
+                  className="flex-1 rounded border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
                 />
                 <button
                   type="button"
                   onClick={handleAddSkill}
                   className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-xs text-emerald-800 border border-emerald-300 rounded flex items-center gap-1 font-mono font-bold"
                 >
-                  <Plus className="w-3.5 h-3.5" /> Thêm Tag
+                   Add skill
                 </button>
               </div>
             </div>
@@ -190,23 +196,23 @@ export const ProfilePage: React.FC = () => {
             <div className="pt-4 border-t border-slate-200 flex justify-end">
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-lg text-sm flex items-center gap-2 shadow-md shadow-emerald-600/20"
+                className="btn-primary"
               >
-                <Save className="w-4 h-4" /> Lưu Thay Đổi
+                 Save changes
               </button>
             </div>
           </form>
         ) : (
           <div className="space-y-6 pt-2">
             <div>
-              <h3 className="text-xs font-mono text-slate-500 uppercase tracking-wider mb-1 font-bold">Giới thiệu</h3>
+              <h3 className="text-xs font-mono text-slate-500 uppercase tracking-wider mb-1 font-bold">About</h3>
               <p className="text-sm text-slate-700 leading-relaxed font-medium">
-                {profile?.bio || 'Chưa cập nhật tiểu sử bản thân.'}
+                {profile?.bio || 'No bio added yet.'}
               </p>
             </div>
 
             <div>
-              <h3 className="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2 font-bold">Kỹ năng công nghệ</h3>
+              <h3 className="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2 font-bold">Technical skills</h3>
               <div className="flex flex-wrap gap-2">
                 {profile?.skills && profile.skills.length > 0 ? (
                   profile.skills.map((skill, idx) => (
@@ -218,7 +224,7 @@ export const ProfilePage: React.FC = () => {
                     </span>
                   ))
                 ) : (
-                  <span className="text-xs text-slate-500 italic">Chưa đăng ký kỹ năng nào.</span>
+                  <span className="text-xs text-slate-500 italic">No skills added yet.</span>
                 )}
               </div>
             </div>
@@ -226,7 +232,7 @@ export const ProfilePage: React.FC = () => {
             {profile?.lookingFor && (
               <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 space-y-1">
                 <span className="text-xs font-mono text-amber-800 font-extrabold flex items-center gap-1.5 uppercase">
-                  <Sparkles className="w-4 h-4 text-amber-600" /> Đang tìm kiếm cơ hội / đồng đội:
+                   Looking for an opportunity / teammate:
                 </span>
                 <p className="text-xs text-slate-800 italic leading-relaxed">{profile.lookingFor}</p>
               </div>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1050" role="img" aria-labelledby="title desc">
+  <title id="title">Góc làm việc VUON</title>
+  <desc id="desc">Minh hoạ một bàn làm việc với mạch điện, sổ tay và dụng cụ chế tạo.</desc>
+  <rect width="900" height="1050" fill="#eee9df"/>
+  <path d="M0 710C150 650 280 740 410 686c145-60 278-63 490 24v340H0Z" fill="#dfeae2"/>
+  <path d="M70 120h760M70 175h760M70 230h760" stroke="#d4d7cf" stroke-width="2"/>
+  <path d="M104 88v220M180 88v220M256 88v220M332 88v220M408 88v220M484 88v220M560 88v220M636 88v220M712 88v220M788 88v220" stroke="#d4d7cf" stroke-width="1"/>
+  <rect x="98" y="328" width="420" height="300" rx="8" fill="#24664f"/>
+  <rect x="118" y="348" width="380" height="260" rx="4" fill="#1b5541" stroke="#9bc2ac" stroke-width="2"/>
+  <path d="M164 425h288M164 475h288M164 525h288" stroke="#9bc2ac" stroke-width="2" opacity=".55"/>
+  <path d="M210 400v180M282 400v180M354 400v180M426 400v180" stroke="#9bc2ac" stroke-width="2" opacity=".55"/>
+  <circle cx="282" cy="475" r="43" fill="#dfeae2"/>
+  <path d="M282 448v54M255 475h54" stroke="#24664f" stroke-linecap="round" stroke-width="6"/>
+  <rect x="579" y="376" width="212" height="270" rx="4" fill="#fbfaf6" stroke="#1c2521" stroke-width="3" transform="rotate(6 685 511)"/>
+  <path d="M618 448h120M618 480h120M618 512h82" stroke="#b4bbb2" stroke-width="5" transform="rotate(6 685 511)"/>
+  <path d="M680 420l40 26-50 84-40-26Z" fill="#c9a978" stroke="#1c2521" stroke-width="3"/>
+  <path d="M613 530l-22 48M700 532l-21 49" stroke="#1c2521" stroke-linecap="round" stroke-width="8"/>
+  <path d="M92 735h710" stroke="#1c2521" stroke-width="5"/>
+  <path d="M148 735v190M748 735v190" stroke="#1c2521" stroke-width="5"/>
+  <circle cx="722" cy="180" r="57" fill="#c9a978"/>
+  <path d="M686 180h72M722 144v72" stroke="#1c2521" stroke-width="4"/>
+  <text x="76" y="96" fill="#24664f" font-family="monospace" font-size="18" letter-spacing="3">VUON / WORKBENCH 01</text>
+  <text x="76" y="1002" fill="#164b3a" font-family="Georgia, serif" font-size="34">make it tangible.</text>
+</svg>

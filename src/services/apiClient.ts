@@ -30,9 +30,9 @@ apiClient.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('vuon_token');
       localStorage.removeItem('vuon_user');
-      // Redirect to login if not already there
-      if (!window.location.pathname.startsWith('/login')) {
-        window.location.href = '/login?expired=true';
+      // Return to the public studio when a protected session expires.
+      if (window.location.pathname !== '/') {
+        window.location.href = '/';
       }
     }
     return Promise.reject(error);

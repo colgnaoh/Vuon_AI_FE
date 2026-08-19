@@ -8,9 +8,6 @@ import { AdminLayout } from '@/layouts/AdminLayout';
 import { ProtectedRoute } from '@/pages/auth/ProtectedRoute';
 
 import { LandingPage } from '@/pages/LandingPage';
-import { LoginPage } from '@/pages/auth/LoginPage';
-import { RegisterPage } from '@/pages/auth/RegisterPage';
-import { DirectoryPage } from '@/pages/directory/DirectoryPage';
 import { ProfilePage } from '@/pages/profile/ProfilePage';
 import { IdeasPage } from '@/pages/ideas/IdeasPage';
 import { IdeaDetailPage } from '@/pages/ideas/IdeaDetailPage';
@@ -19,7 +16,6 @@ import { ProjectDetailPage } from '@/pages/projects/ProjectDetailPage';
 import { ProjectManagePage } from '@/pages/projects/ProjectManagePage';
 import { EquipmentPage } from '@/pages/equipment/EquipmentPage';
 import { MyBookingsPage } from '@/pages/equipment/MyBookingsPage';
-import { EventsPage } from '@/pages/events/EventsPage';
 
 import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage';
 import { AdminEquipmentPage } from '@/pages/admin/AdminEquipmentPage';
@@ -44,15 +40,13 @@ export const App: React.FC = () => {
             {/* Public & Member Routes wrapped in RootLayout */}
             <Route element={<RootLayout />}>
               <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/directory" element={<DirectoryPage />} />
+              <Route path="/directory" element={<Navigate to="/ideas" replace />} />
               <Route path="/ideas" element={<IdeasPage />} />
               <Route path="/ideas/:id" element={<IdeaDetailPage />} />
               <Route path="/projects" element={<ProjectsPage />} />
               <Route path="/projects/:id" element={<ProjectDetailPage />} />
               <Route path="/equipment" element={<EquipmentPage />} />
-              <Route path="/events" element={<EventsPage />} />
+              <Route path="/events" element={<Navigate to="/" replace />} />
 
               {/* Protected Member Routes */}
               <Route

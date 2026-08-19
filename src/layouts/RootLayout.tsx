@@ -5,9 +5,9 @@ import { Footer } from './Footer';
 
 export const RootLayout: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-[#0A0D12]">
+    <div className="min-h-screen flex flex-col bg-[var(--paper)]">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-hidden">
         <Outlet />
       </main>
       <Footer />

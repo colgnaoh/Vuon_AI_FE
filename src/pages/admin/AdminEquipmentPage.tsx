@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Dialog } from '@/components/Dialog';
 import { adminService } from '@/services/adminService';
 import { equipmentService } from '@/services/equipmentService';
 import { Equipment, EquipmentCategory } from '@/types';
-import { Wrench, Plus, Edit2, CheckCircle2, AlertTriangle, Clock } from 'lucide-react';
 
 export const AdminEquipmentPage: React.FC = () => {
   const [equipmentList, setEquipmentList] = useState<Equipment[]>([]);
@@ -69,33 +69,33 @@ export const AdminEquipmentPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            <Wrench className="w-6 h-6 text-emerald-600" /> Quản Lý Kho Thiết Bị Lab
+            Lab equipment inventory
           </h1>
-          <p className="text-xs text-slate-600 mt-1">Thêm thiết bị mới và override trạng thái hoạt động trong kho.</p>
+          <p className="text-xs text-slate-600 mt-1">Add equipment and override live inventory status.</p>
         </div>
 
         <button
           onClick={() => setAddModalOpen(true)}
           className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-md shadow-emerald-600/20"
         >
-          <Plus className="w-4 h-4" /> Thêm Thiết Bị Mới
+          Add new equipment
         </button>
       </div>
 
       {/* Equipment Data Table */}
       {loading ? (
-        <div className="text-center py-20 text-slate-500 text-sm">Đang tải kho thiết bị...</div>
+        <div className="text-center py-20 text-slate-500 text-sm">Loading equipment inventory...</div>
       ) : (
         <div className="tech-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-slate-700">
               <thead className="bg-slate-50 text-xs uppercase font-mono font-bold text-slate-600 border-b border-slate-200">
                 <tr>
-                  <th className="px-6 py-4">Mã / Tên Thiết Bị</th>
-                  <th className="px-6 py-4">Phân Loại</th>
-                  <th className="px-6 py-4">Vị Trí Cất Giữ</th>
-                  <th className="px-6 py-4">Trạng Thái</th>
-                  <th className="px-6 py-4 text-right">Đổi Trạng Thái</th>
+                  <th className="px-6 py-4">ID / equipment</th>
+                  <th className="px-6 py-4">Category</th>
+                  <th className="px-6 py-4">Storage location</th>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4 text-right">Change status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
@@ -128,10 +128,10 @@ export const AdminEquipmentPage: React.FC = () => {
                         onChange={(e) => handleStatusToggle(eq.id, e.target.value as any)}
                         className="px-2.5 py-1 bg-slate-50 border border-slate-300 text-xs font-mono font-bold text-slate-900 rounded focus:outline-none"
                       >
-                        <option value="Available">Available (Sẵn sàng)</option>
-                        <option value="Borrowed">Borrowed (Đang mượn)</option>
-                        <option value="Maintenance">Maintenance (Bảo trì)</option>
-                        <option value="Reserved">Reserved (Đặt trước)</option>
+                        <option value="Available">Available</option>
+                        <option value="Borrowed">Borrowed</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Reserved">Reserved</option>
                       </select>
                     </td>
                   </tr>
@@ -144,34 +144,28 @@ export const AdminEquipmentPage: React.FC = () => {
 
       {/* Add Equipment Modal */}
       {addModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className="tech-card p-6 md:p-8 max-w-md w-full space-y-6 relative border-emerald-300 shadow-xl">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Wrench className="w-5 h-5 text-emerald-600" /> Thêm Thiết Bị Vào Kho
-              </h3>
-              <button onClick={() => setAddModalOpen(false)} className="text-slate-400 hover:text-slate-700">✕</button>
-            </div>
-
+        <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} title="Add equipment to inventory" size="sm">
             <form onSubmit={handleAddEquipment} className="space-y-4">
               <div>
-                <label className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Tên Thiết Bị</label>
+                <label htmlFor="equipment-name" className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Equipment name</label>
                 <input
+                  id="equipment-name"
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="VD: NVIDIA Jetson Orin Nano (8GB)..."
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-emerald-500"
+                  className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Danh Mục Kho</label>
+                <label htmlFor="equipment-category" className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Inventory category</label>
                 <select
+                  id="equipment-category"
                   value={category}
                   onChange={(e) => setCategory(e.target.value as any)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-emerald-500"
+                  className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
                 >
                   <option value="AI">AI & Edge Compute</option>
                   <option value="Robotics">Robotics & Motors</option>
@@ -183,36 +177,39 @@ export const AdminEquipmentPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Mô Tả Công Dụng</label>
+                <label htmlFor="equipment-description" className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Use case</label>
                 <textarea
+                  id="equipment-description"
                   rows={2}
                   required
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Bo mạch nén AI Edge 40 TOPS cho Computer Vision..."
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-emerald-500"
+                  placeholder="Compact 40 TOPS edge board for computer vision..."
+                  className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Thông Số Kỹ Thuật (Specs)</label>
+                <label htmlFor="equipment-specs" className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Technical specifications</label>
                 <input
+                  id="equipment-specs"
                   type="text"
                   value={specifications}
                   onChange={(e) => setSpecifications(e.target.value)}
                   placeholder="GPU 1024-core Ampere, 8GB LPDDR5"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-emerald-500"
+                  className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Vị Trí Cất Giữ Trong Lab</label>
+                <label htmlFor="equipment-location" className="block text-xs font-mono text-slate-700 mb-1 uppercase font-bold">Lab storage location</label>
                 <input
+                  id="equipment-location"
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Zone 02 - AI Lab (Tủ A1)"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-emerald-500"
+                  placeholder="Zone 02 - AI Lab (Cabinet A1)"
+                  className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
                 />
               </div>
 
@@ -220,20 +217,19 @@ export const AdminEquipmentPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setAddModalOpen(false)}
-                  className="px-4 py-2 bg-slate-100 text-slate-700 font-semibold text-sm rounded-lg"
+                  className="btn-secondary"
                 >
-                  Hủy
+                  Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-lg"
+                  className="btn-primary"
                 >
-                  Thêm Thiết Bị
+                  Add equipment
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+        </Dialog>
       )}
 
     </div>

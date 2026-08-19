@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { projectService } from '@/services/projectService';
 import { Project, ProjectStatus } from '@/types';
-import { ArrowLeft, CheckCircle2, UserCheck, Shield, Clock } from 'lucide-react';
 
 export const ProjectManagePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -29,7 +28,7 @@ export const ProjectManagePage: React.FC = () => {
     if (!id) return;
     try {
       await projectService.approveMember(id, targetUserId);
-      alert('Đã phê duyệt thành viên chính thức!');
+      alert('Member approved successfully!');
       fetchProject(id);
     } catch {
       // Handled
@@ -47,7 +46,7 @@ export const ProjectManagePage: React.FC = () => {
   };
 
   if (loading || !project) {
-    return <div className="text-center py-20 text-slate-500 text-sm">Đang tải thông tin quản lý dự án...</div>;
+    return <div className="text-center py-20 text-slate-500 text-sm">Loading project management...</div>;
   }
 
   const pendingMembers = project.members.filter((m) => m.status === 'Pending');
@@ -57,7 +56,7 @@ export const ProjectManagePage: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
       <Link to={`/projects/${project.id}`} className="inline-flex items-center gap-2 text-xs font-mono font-bold text-slate-500 hover:text-emerald-700">
-        <ArrowLeft className="w-4 h-4" /> Trở về Chi Tiết Dự Án
+        Back to project details
       </Link>
 
       <div className="tech-card p-6 md:p-8 space-y-6 border-emerald-300">
@@ -69,17 +68,17 @@ export const ProjectManagePage: React.FC = () => {
 
           {/* Status Switcher */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-slate-600 font-bold">Trạng thái:</span>
+            <span className="text-xs font-mono text-slate-600 font-bold">Status:</span>
             <select
               value={project.status}
               onChange={(e) => handleStatusChange(e.target.value as ProjectStatus)}
-              className="px-3 py-1.5 bg-slate-50 border border-slate-300 text-slate-900 rounded text-xs font-mono font-bold focus:outline-none"
+              className="rounded border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-mono font-bold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
             >
-              <option value="Recruiting">Recruiting (Tuyển quân)</option>
-              <option value="Building">Building (Đang phát triển)</option>
-              <option value="Testing">Testing (Thử nghiệm)</option>
-              <option value="Completed">Completed (Hoàn thành)</option>
-              <option value="Paused">Paused (Tạm dừng)</option>
+              <option value="Recruiting">Recruiting</option>
+              <option value="Building">Building</option>
+              <option value="Testing">Testing</option>
+              <option value="Completed">Completed</option>
+              <option value="Paused">Paused</option>
             </select>
           </div>
         </div>
@@ -87,12 +86,12 @@ export const ProjectManagePage: React.FC = () => {
         {/* Pending Join Requests */}
         <div className="space-y-4">
           <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-amber-600" /> Yêu Cầu Xin Tham Gia Đang Chờ Duyệt ({pendingMembers.length})
+            Pending join requests ({pendingMembers.length})
           </h3>
 
           {pendingMembers.length === 0 ? (
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-500 italic">
-              Không có yêu cầu xin tham gia mới nào.
+              No new join requests.
             </div>
           ) : (
             <div className="space-y-3">
@@ -104,7 +103,7 @@ export const ProjectManagePage: React.FC = () => {
                     </div>
                     <div>
                       <h4 className="text-sm font-bold text-slate-900">{m.fullName}</h4>
-                      <p className="text-xs text-slate-600">Ứng tuyển vị trí: <strong className="text-amber-800">{m.roleInProject}</strong></p>
+                      <p className="text-xs text-slate-600">Applying for: <strong className="text-amber-800">{m.roleInProject}</strong></p>
                     </div>
                   </div>
 
@@ -112,7 +111,7 @@ export const ProjectManagePage: React.FC = () => {
                     onClick={() => handleApprove(m.userId)}
                     className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 shadow-md shadow-emerald-600/20"
                   >
-                    <CheckCircle2 className="w-4 h-4" /> Phê Duyệt
+                    Approve
                   </button>
                 </div>
               ))}
@@ -123,7 +122,7 @@ export const ProjectManagePage: React.FC = () => {
         {/* Active Team Members */}
         <div className="space-y-4 pt-4 border-t border-slate-200">
           <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <UserCheck className="w-4 h-4 text-emerald-600" /> Thành Viên Chính Thức ({activeMembers.length})
+            Active team members ({activeMembers.length})
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

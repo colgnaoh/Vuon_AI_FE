@@ -1,21 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { 
-  Sprout, 
-  Lightbulb, 
-  FolderGit2, 
-  Wrench, 
-  Calendar, 
-  Users, 
-  ShieldAlert, 
-  LogOut, 
-  User as UserIcon,
-  Menu,
-  X,
-  ChevronDown,
-  Clock
-} from 'lucide-react';
+
+const navLinks = [
+  { name: 'Ideas', path: '/ideas', index: '01' },
+  { name: 'Projects', path: '/projects', index: '02' },
+  { name: 'Equipment', path: '/equipment', index: '03' },
+];
+
+const contactEmail = 'hyperdatalabspace@reso.vn';
+const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(contactEmail)}`;
 
 export const Navbar: React.FC = () => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
@@ -25,269 +19,120 @@ export const Navbar: React.FC = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/');
+  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(`${path}/`);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setUserMenuOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
-  const navLinks = [
-    { name: 'Directory', path: '/directory', icon: Users },
-    { name: 'Ý Tưởng (Ideas)', path: '/ideas', icon: Lightbulb },
-    { name: 'Dự Án (Projects)', path: '/projects', icon: FolderGit2 },
-    { name: 'Kho Thiết Bị', path: '/equipment', icon: Wrench },
-    { name: 'Sự Kiện', path: '/events', icon: Calendar },
-  ];
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setUserMenuOpen(false);
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
+    setUserMenuOpen(false);
+    setMobileMenuOpen(false);
     navigate('/');
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-amber-500 p-[1px] shadow-md shadow-emerald-500/20">
-              <div className="w-full h-full bg-white rounded-[11px] flex items-center justify-center group-hover:bg-transparent transition-all">
-                <Sprout className="w-5 h-5 text-emerald-600 group-hover:text-white transition-colors" />
-              </div>
-            </div>
-            <div>
-              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-emerald-700 via-teal-700 to-amber-600 bg-clip-text text-transparent">
-                VUON <span className="text-emerald-600">AI SPACE</span>
-              </span>
-              <span className="block text-[10px] text-slate-500 font-mono tracking-widest uppercase">Where Ideas Grow</span>
-            </div>
-          </Link>
+    <header className="site-nav">
+      <div className="site-nav-inner">
+        <Link to="/" className="wordmark" aria-label="VUON AI SPACE - Home">
+          <span className="wordmark-mark" aria-hidden="true"><img src="/vuon-logo.png" alt="" /></span>
+          <span className="wordmark-copy">
+            <strong>VUON AI SPACE</strong>
+            <span>where ideas grow</span>
+          </span>
+        </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const active = isActive(link.path);
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all ${
-                    active
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-xs'
-                      : 'text-slate-600 hover:text-emerald-700 hover:bg-slate-50'
-                  }`}
-                >
-                  <Icon className={`w-4 h-4 ${active ? 'text-emerald-600' : 'text-slate-400'}`} />
-                  {link.name}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* User Auth Section */}
-          <div className="hidden md:flex items-center gap-3">
-            {isAuthenticated && user ? (
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl border transition-all ${
-                    userMenuOpen 
-                      ? 'bg-slate-100 border-slate-300 shadow-inner' 
-                      : 'bg-slate-50 border-slate-200/80 hover:border-emerald-300 hover:bg-white shadow-2xs'
-                  }`}
-                >
-                  {user.avatarUrl ? (
-                    <img src={user.avatarUrl} alt={user.fullName} className="w-7 h-7 rounded-full object-cover ring-2 ring-emerald-500/20" />
-                  ) : (
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                      {user.fullName.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <div className="flex flex-col text-left">
-                    <span className="text-xs font-bold text-slate-800 leading-tight">{user.fullName}</span>
-                    {isAdmin && (
-                      <span className="text-[9px] font-extrabold text-amber-600 tracking-wider uppercase">Admin</span>
-                    )}
-                  </div>
-                  <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${userMenuOpen ? 'rotate-180 text-emerald-600' : ''}`} />
-                </button>
-
-                {/* User Dropdown Menu */}
-                {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-xl border border-slate-200/80 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                    {/* User Header */}
-                    <div className="px-4 py-2.5 border-b border-slate-100">
-                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Tài khoản</p>
-                      <p className="text-sm font-bold text-slate-800 truncate">{user.fullName}</p>
-                      <p className="text-xs text-slate-500 truncate">{user.email}</p>
-                    </div>
-
-                    {/* Navigation items */}
-                    <div className="py-1">
-                      <Link
-                        to="/profile/me"
-                        onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-emerald-700 font-medium transition-colors"
-                      >
-                        <UserIcon className="w-4 h-4 text-slate-400" />
-                        Hồ sơ cá nhân
-                      </Link>
-                      <Link
-                        to="/my-bookings"
-                        onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-emerald-700 font-medium transition-colors"
-                      >
-                        <Clock className="w-4 h-4 text-slate-400" />
-                        Lịch mượn thiết bị
-                      </Link>
-                    </div>
-
-                    {/* Admin Portal section if Admin */}
-                    {isAdmin && (
-                      <>
-                        <div className="border-t border-slate-100 my-1"></div>
-                        <div className="px-2 py-0.5">
-                          <Link
-                            to="/admin/dashboard"
-                            onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 transition-all shadow-2xs"
-                          >
-                            <ShieldAlert className="w-4 h-4 text-amber-600" />
-                            <span>Admin Portal</span>
-                          </Link>
-                        </div>
-                      </>
-                    )}
-
-                    <div className="border-t border-slate-100 my-1"></div>
-                    <div className="px-1">
-                      <button
-                        onClick={() => {
-                          setUserMenuOpen(false);
-                          handleLogout();
-                        }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Đăng xuất
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  to="/login"
-                  className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-emerald-700 transition-colors"
-                >
-                  Đăng nhập
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-4 py-2 text-sm font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 rounded-lg shadow-md shadow-emerald-600/20 transition-all"
-                >
-                  Tham gia Lab
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="flex md:hidden items-center">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-
-        </div>
-      </div>
-
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-3">
+        <nav className="nav-links" aria-label="Main navigation">
           {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-md text-base font-semibold text-slate-700 hover:bg-slate-100"
-            >
+            <Link key={link.path} to={link.path} aria-current={isActive(link.path) ? 'page' : undefined} className="nav-link">
+              <span className="font-mono text-[0.58rem] text-[var(--accent)]" aria-hidden="true">{link.index}</span>
               {link.name}
             </Link>
           ))}
-          {isAdmin && (
-            <Link
-              to="/admin/dashboard"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 rounded-md text-base font-bold text-amber-800 bg-amber-50 border border-amber-200"
-            >
-              <ShieldAlert className="w-4 h-4 text-amber-600" />
-              Admin Portal
-            </Link>
-          )}
+        </nav>
 
-          <div className="pt-4 border-t border-slate-200 flex flex-col gap-2">
+        <div className="nav-actions">
+          {isAuthenticated && user ? (
+            <div className="relative" ref={dropdownRef}>
+              <button
+                type="button"
+                onClick={() => setUserMenuOpen((open) => !open)}
+                aria-expanded={userMenuOpen}
+                aria-haspopup="menu"
+                aria-label={userMenuOpen ? 'Close account menu' : 'Open account menu'}
+                className="nav-account"
+              >
+                <span className="nav-avatar" aria-hidden="true">{user.fullName.charAt(0).toUpperCase()}</span>
+                <span className="max-w-28 truncate">{user.fullName}</span>
+                <span className="account-state">{userMenuOpen ? 'close' : 'open'}</span>
+              </button>
+
+              {userMenuOpen && (
+                <div role="menu" aria-label="Account menu" className="absolute right-0 mt-2 w-56 border border-[var(--line)] bg-[var(--paper-bright)] p-2 shadow-[var(--shadow-paper)]">
+                  <div className="border-b border-[var(--line)] px-3 py-2">
+                    <p className="font-mono text-[0.6rem] uppercase tracking-widest text-[var(--accent)]">account</p>
+                    <p className="mt-1 truncate text-sm font-semibold text-[var(--ink)]">{user.fullName}</p>
+                    <p className="truncate text-xs text-[var(--ink-soft)]">{user.email}</p>
+                  </div>
+                  <Link to="/profile/me" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--ink-soft)] hover:bg-[var(--accent-wash)] hover:text-[var(--accent-strong)]">My profile</Link>
+                  <Link to="/my-bookings" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--ink-soft)] hover:bg-[var(--accent-wash)] hover:text-[var(--accent-strong)]">Equipment bookings</Link>
+                  {isAdmin && <Link to="/admin/dashboard" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--accent-strong)] hover:bg-[var(--accent-wash)]">Admin portal</Link>}
+                  <button type="button" role="menuitem" onClick={handleLogout} className="flex w-full items-center gap-2 border-t border-[var(--line)] px-3 py-2 text-left text-sm text-[var(--ink-soft)] hover:text-[var(--accent-strong)]">Log out</button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <a href={gmailComposeUrl} target="_blank" rel="noreferrer" className="nav-join">Join the lab</a>
+            </>
+          )}
+        </div>
+
+        <button type="button" className="mobile-menu-toggle" onClick={() => setMobileMenuOpen((open) => !open)} aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileMenuOpen} aria-controls="mobile-navigation">
+          <span className="mobile-menu-label" aria-hidden="true">{mobileMenuOpen ? 'close' : 'menu'}</span>
+        </button>
+      </div>
+
+      {mobileMenuOpen && (
+        <nav id="mobile-navigation" className="mobile-nav-panel" aria-label="Mobile navigation">
+          {navLinks.map((link) => (
+            <Link key={link.path} to={link.path} onClick={() => setMobileMenuOpen(false)} aria-current={isActive(link.path) ? 'page' : undefined}>
+                <span className="font-mono text-xs text-[var(--accent)]" aria-hidden="true">{link.index}</span>{' '}{link.name}
+            </Link>
+          ))}
+          <div className="mobile-nav-actions">
             {isAuthenticated ? (
               <>
-                <Link
-                  to="/profile/me"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2 text-slate-700 font-semibold"
-                >
-                  <UserIcon className="w-4 h-4 text-emerald-600" /> Hồ sơ cá nhân ({user?.fullName})
-                </Link>
-                <Link
-                  to="/my-bookings"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2 text-slate-700 font-semibold"
-                >
-                  <Clock className="w-4 h-4 text-emerald-600" /> Lịch mượn thiết bị
-                </Link>
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="flex items-center gap-2 px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-md font-semibold"
-                >
-                  <LogOut className="w-4 h-4" /> Đăng xuất
-                </button>
+                <Link to="/profile/me" onClick={() => setMobileMenuOpen(false)}>Profile</Link>
+                <button type="button" onClick={handleLogout} className="border border-[var(--line)] p-3 text-sm text-[var(--ink-soft)]">Log out</button>
               </>
             ) : (
-              <div className="flex flex-col gap-2 pt-2">
-                <Link
-                  to="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 text-slate-700 bg-slate-100 rounded-lg font-semibold"
-                >
-                  Đăng nhập
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 text-white bg-emerald-600 rounded-lg font-semibold"
-                >
-                  Tham gia Lab
-                </Link>
-              </div>
+              <>
+                <a href={gmailComposeUrl} target="_blank" rel="noreferrer" onClick={() => setMobileMenuOpen(false)}>Join the lab</a>
+              </>
             )}
           </div>
-        </div>
+        </nav>
       )}
     </header>
   );
 };
-
