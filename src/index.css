@@ -490,7 +490,7 @@
   margin: 0;
 }
 
-.proof-heading > span {
+.proof-heading>span {
   color: var(--ink-soft);
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.62rem;
@@ -1124,6 +1124,7 @@
 }
 
 @media (max-width: 620px) {
+
   .page-shell,
   .site-nav-inner,
   .site-footer-grid,
