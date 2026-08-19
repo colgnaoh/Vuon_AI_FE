@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { 
@@ -12,7 +12,9 @@ import {
   LogOut, 
   User as UserIcon,
   Menu,
-  X
+  X,
+  ChevronDown,
+  Clock
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -20,8 +22,21 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/');
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const navLinks = [
     { name: 'Directory', path: '/directory', icon: Users },
@@ -76,56 +91,98 @@ export const Navbar: React.FC = () => {
                 </Link>
               );
             })}
-
-            {isAdmin && (
-              <Link
-                to="/admin/dashboard"
-                className={`flex items-center gap-1.5 px-3 py-1.5 ml-2 rounded-lg text-xs font-mono font-bold transition-all ${
-                  isActive('/admin')
-                    ? 'bg-amber-100 text-amber-900 border border-amber-300'
-                    : 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100'
-                }`}
-              >
-                <ShieldAlert className="w-3.5 h-3.5" />
-                ADMIN PORTAL
-              </Link>
-            )}
           </nav>
 
           {/* User Auth Section */}
           <div className="hidden md:flex items-center gap-3">
             {isAuthenticated && user ? (
-              <div className="flex items-center gap-3">
-                <Link
-                  to="/my-bookings"
-                  className="text-xs font-semibold text-slate-600 hover:text-emerald-600 font-mono transition-colors"
-                >
-                  Lịch Mượn
-                </Link>
-
-                <div className="h-4 w-[1px] bg-slate-200"></div>
-
-                <Link
-                  to="/profile/me"
-                  className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 hover:border-emerald-300 transition-all shadow-2xs"
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl border transition-all ${
+                    userMenuOpen 
+                      ? 'bg-slate-100 border-slate-300 shadow-inner' 
+                      : 'bg-slate-50 border-slate-200/80 hover:border-emerald-300 hover:bg-white shadow-2xs'
+                  }`}
                 >
                   {user.avatarUrl ? (
-                    <img src={user.avatarUrl} alt={user.fullName} className="w-6 h-6 rounded-full object-cover" />
+                    <img src={user.avatarUrl} alt={user.fullName} className="w-7 h-7 rounded-full object-cover ring-2 ring-emerald-500/20" />
                   ) : (
-                    <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
-                      {user.fullName.charAt(0)}
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                      {user.fullName.charAt(0).toUpperCase()}
                     </div>
                   )}
-                  <span className="text-sm font-semibold text-slate-800">{user.fullName}</span>
-                </Link>
-
-                <button
-                  onClick={handleLogout}
-                  title="Đăng xuất"
-                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
-                >
-                  <LogOut className="w-4 h-4" />
+                  <div className="flex flex-col text-left">
+                    <span className="text-xs font-bold text-slate-800 leading-tight">{user.fullName}</span>
+                    {isAdmin && (
+                      <span className="text-[9px] font-extrabold text-amber-600 tracking-wider uppercase">Admin</span>
+                    )}
+                  </div>
+                  <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${userMenuOpen ? 'rotate-180 text-emerald-600' : ''}`} />
                 </button>
+
+                {/* User Dropdown Menu */}
+                {userMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-xl border border-slate-200/80 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                    {/* User Header */}
+                    <div className="px-4 py-2.5 border-b border-slate-100">
+                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Tài khoản</p>
+                      <p className="text-sm font-bold text-slate-800 truncate">{user.fullName}</p>
+                      <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                    </div>
+
+                    {/* Navigation items */}
+                    <div className="py-1">
+                      <Link
+                        to="/profile/me"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-emerald-700 font-medium transition-colors"
+                      >
+                        <UserIcon className="w-4 h-4 text-slate-400" />
+                        Hồ sơ cá nhân
+                      </Link>
+                      <Link
+                        to="/my-bookings"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-emerald-700 font-medium transition-colors"
+                      >
+                        <Clock className="w-4 h-4 text-slate-400" />
+                        Lịch mượn thiết bị
+                      </Link>
+                    </div>
+
+                    {/* Admin Portal section if Admin */}
+                    {isAdmin && (
+                      <>
+                        <div className="border-t border-slate-100 my-1"></div>
+                        <div className="px-2 py-0.5">
+                          <Link
+                            to="/admin/dashboard"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 transition-all shadow-2xs"
+                          >
+                            <ShieldAlert className="w-4 h-4 text-amber-600" />
+                            <span>Admin Portal</span>
+                          </Link>
+                        </div>
+                      </>
+                    )}
+
+                    <div className="border-t border-slate-100 my-1"></div>
+                    <div className="px-1">
+                      <button
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          handleLogout();
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Đăng xuất
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="flex items-center gap-2">
@@ -175,8 +232,9 @@ export const Navbar: React.FC = () => {
             <Link
               to="/admin/dashboard"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-md text-base font-mono text-amber-700 bg-amber-50"
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-base font-bold text-amber-800 bg-amber-50 border border-amber-200"
             >
+              <ShieldAlert className="w-4 h-4 text-amber-600" />
               Admin Portal
             </Link>
           )}
@@ -190,6 +248,13 @@ export const Navbar: React.FC = () => {
                   className="flex items-center gap-2 px-3 py-2 text-slate-700 font-semibold"
                 >
                   <UserIcon className="w-4 h-4 text-emerald-600" /> Hồ sơ cá nhân ({user?.fullName})
+                </Link>
+                <Link
+                  to="/my-bookings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 text-slate-700 font-semibold"
+                >
+                  <Clock className="w-4 h-4 text-emerald-600" /> Lịch mượn thiết bị
                 </Link>
                 <button
                   onClick={() => {
@@ -225,3 +290,4 @@ export const Navbar: React.FC = () => {
     </header>
   );
 };
+
