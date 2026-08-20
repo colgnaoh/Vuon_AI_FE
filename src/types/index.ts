@@ -119,9 +119,93 @@ export interface TechEvent {
   title: string;
   category: 'Workshop' | 'Tech Talk' | 'Hackathon' | 'Build Night' | 'Demo Day';
   speaker: string;
+  speakerRole?: string;
+  speakerAvatar?: string;
   date: string;
   location: string;
   description: string;
+  agenda?: { time: string; topic: string }[];
   registeredCount: number;
+  maxParticipants?: number;
   isRegistered?: boolean;
+  imageUrl?: string;
 }
+
+export interface Mentor {
+  id: string;
+  fullName: string;
+  avatarUrl?: string;
+  title: string;
+  company?: string;
+  bio: string;
+  expertise: string[];
+  lookingForMentees: boolean;
+  rating: number;
+  totalMentees: number;
+  contactEmail?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
+}
+
+export interface Lab {
+  id: string;
+  name: string;
+  location: string;
+  description: string;
+  imageUrl?: string;
+  status: 'Open' | 'Maintenance' | 'Full';
+  capacity: number;
+  activeWorkstations: number;
+  equipmentCount: number;
+  aiCameraActive: boolean;
+  facilities: string[];
+}
+
+export interface NotificationItem {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  type: 'Booking' | 'Idea' | 'Project' | 'Event' | 'System';
+  isRead: boolean;
+  createdAt: string;
+  linkUrl?: string;
+}
+
+export interface AdminBookingApproval {
+  id: string;
+  equipmentId: string;
+  equipmentName: string;
+  userId: string;
+  userName: string;
+  userEmail?: string;
+  startDate: string;
+  endDate: string;
+  purpose: string;
+  status: BookingStatus;
+  createdAt: string;
+}
+
+export interface AdminIdeaApproval {
+  id: string;
+  title: string;
+  summary: string;
+  authorName: string;
+  authorId: string;
+  requiredTech: string[];
+  status: IdeaStatus;
+  createdAt: string;
+}
+
+export interface AdminProjectApproval {
+  id: string;
+  title: string;
+  summary: string;
+  leaderName: string;
+  leaderId: string;
+  techStack: string[];
+  domainCategory: string;
+  status: ProjectStatus;
+  createdAt: string;
+}
+

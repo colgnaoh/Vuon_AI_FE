@@ -17,9 +17,19 @@ import { ProjectManagePage } from '@/pages/projects/ProjectManagePage';
 import { EquipmentPage } from '@/pages/equipment/EquipmentPage';
 import { MyBookingsPage } from '@/pages/equipment/MyBookingsPage';
 
+import { EventsPage } from '@/pages/events/EventsPage';
+import { EventDetailPage } from '@/pages/events/EventDetailPage';
+import { MentorsPage } from '@/pages/mentors/MentorsPage';
+import { MentorDetailPage } from '@/pages/mentors/MentorDetailPage';
+import { LabsPage } from '@/pages/labs/LabsPage';
+import { NotificationsPage } from '@/pages/notifications/NotificationsPage';
+
 import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage';
 import { AdminEquipmentPage } from '@/pages/admin/AdminEquipmentPage';
 import { AdminUsersPage } from '@/pages/admin/AdminUsersPage';
+import { AdminBookingsPage } from '@/pages/admin/AdminBookingsPage';
+import { AdminIdeasPage } from '@/pages/admin/AdminIdeasPage';
+import { AdminProjectsPage } from '@/pages/admin/AdminProjectsPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,7 +56,11 @@ export const App: React.FC = () => {
               <Route path="/projects" element={<ProjectsPage />} />
               <Route path="/projects/:id" element={<ProjectDetailPage />} />
               <Route path="/equipment" element={<EquipmentPage />} />
-              <Route path="/events" element={<Navigate to="/" replace />} />
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/events/:id" element={<EventDetailPage />} />
+              <Route path="/mentors" element={<MentorsPage />} />
+              <Route path="/mentors/:id" element={<MentorDetailPage />} />
+              <Route path="/labs" element={<LabsPage />} />
 
               {/* Protected Member Routes */}
               <Route
@@ -62,6 +76,14 @@ export const App: React.FC = () => {
                 element={
                   <ProtectedRoute>
                     <MyBookingsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/notifications"
+                element={
+                  <ProtectedRoute>
+                    <NotificationsPage />
                   </ProtectedRoute>
                 }
               />
@@ -87,6 +109,9 @@ export const App: React.FC = () => {
               <Route index element={<Navigate to="/admin/dashboard" replace />} />
               <Route path="dashboard" element={<AdminDashboardPage />} />
               <Route path="equipment" element={<AdminEquipmentPage />} />
+              <Route path="bookings" element={<AdminBookingsPage />} />
+              <Route path="ideas" element={<AdminIdeasPage />} />
+              <Route path="projects" element={<AdminProjectsPage />} />
               <Route path="users" element={<AdminUsersPage />} />
             </Route>
 
@@ -99,5 +124,6 @@ export const App: React.FC = () => {
     </QueryClientProvider>
   );
 };
+
 
 export default App;

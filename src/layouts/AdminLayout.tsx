@@ -30,8 +30,12 @@ export const AdminLayout: React.FC = () => {
   const adminNav = [
     { name: 'Dashboard Overview', path: '/admin/dashboard', index: '01' },
     { name: 'Equipment inventory', path: '/admin/equipment', index: '02' },
-    { name: 'Members & roles', path: '/admin/users', index: '03' },
+    { name: 'Booking approvals', path: '/admin/bookings', index: '03' },
+    { name: 'Idea approvals', path: '/admin/ideas', index: '04' },
+    { name: 'Project approvals', path: '/admin/projects', index: '05' },
+    { name: 'Members & roles', path: '/admin/users', index: '06' },
   ];
+
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col md:flex-row">

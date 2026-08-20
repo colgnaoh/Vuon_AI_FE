@@ -1,12 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { NotificationBell } from '@/components/navigation/NotificationBell';
 
 const navLinks = [
   { name: 'Ideas', path: '/ideas', index: '01' },
   { name: 'Projects', path: '/projects', index: '02' },
   { name: 'Equipment', path: '/equipment', index: '03' },
+  { name: 'Events', path: '/events', index: '04' },
+  { name: 'Mentors', path: '/mentors', index: '05' },
+  { name: 'Labs', path: '/labs', index: '06' },
 ];
+
 
 const contactEmail = 'hyperdatalabspace@reso.vn';
 const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(contactEmail)}`;
@@ -70,36 +75,40 @@ export const Navbar: React.FC = () => {
           ))}
         </nav>
 
-        <div className="nav-actions">
+        <div className="nav-actions flex items-center gap-3">
           {isAuthenticated && user ? (
-            <div className="relative" ref={dropdownRef}>
-              <button
-                type="button"
-                onClick={() => setUserMenuOpen((open) => !open)}
-                aria-expanded={userMenuOpen}
-                aria-haspopup="menu"
-                aria-label={userMenuOpen ? 'Close account menu' : 'Open account menu'}
-                className="nav-account"
-              >
-                <span className="nav-avatar" aria-hidden="true">{user.fullName.charAt(0).toUpperCase()}</span>
-                <span className="max-w-28 truncate">{user.fullName}</span>
-                <span className="account-state">{userMenuOpen ? 'close' : 'open'}</span>
-              </button>
+            <>
+              <NotificationBell />
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setUserMenuOpen((open) => !open)}
+                  aria-expanded={userMenuOpen}
+                  aria-haspopup="menu"
+                  aria-label={userMenuOpen ? 'Close account menu' : 'Open account menu'}
+                  className="nav-account"
+                >
+                  <span className="nav-avatar" aria-hidden="true">{user.fullName.charAt(0).toUpperCase()}</span>
+                  <span className="max-w-28 truncate">{user.fullName}</span>
+                  <span className="account-state">{userMenuOpen ? 'close' : 'open'}</span>
+                </button>
 
-              {userMenuOpen && (
-                <div role="menu" aria-label="Account menu" className="absolute right-0 mt-2 w-56 border border-[var(--line)] bg-[var(--paper-bright)] p-2 shadow-[var(--shadow-paper)]">
-                  <div className="border-b border-[var(--line)] px-3 py-2">
-                    <p className="font-mono text-[0.6rem] uppercase tracking-widest text-[var(--accent)]">account</p>
-                    <p className="mt-1 truncate text-sm font-semibold text-[var(--ink)]">{user.fullName}</p>
-                    <p className="truncate text-xs text-[var(--ink-soft)]">{user.email}</p>
+                {userMenuOpen && (
+                  <div role="menu" aria-label="Account menu" className="absolute right-0 mt-2 w-56 border border-[var(--line)] bg-[var(--paper-bright)] p-2 shadow-[var(--shadow-paper)]">
+                    <div className="border-b border-[var(--line)] px-3 py-2">
+                      <p className="font-mono text-[0.6rem] uppercase tracking-widest text-[var(--accent)]">account</p>
+                      <p className="mt-1 truncate text-sm font-semibold text-[var(--ink)]">{user.fullName}</p>
+                      <p className="truncate text-xs text-[var(--ink-soft)]">{user.email}</p>
+                    </div>
+                    <Link to="/profile/me" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--ink-soft)] hover:bg-[var(--accent-wash)] hover:text-[var(--accent-strong)]">My profile</Link>
+                    <Link to="/my-bookings" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--ink-soft)] hover:bg-[var(--accent-wash)] hover:text-[var(--accent-strong)]">Equipment bookings</Link>
+                    <Link to="/notifications" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--ink-soft)] hover:bg-[var(--accent-wash)] hover:text-[var(--accent-strong)]">Notifications</Link>
+                    {isAdmin && <Link to="/admin/dashboard" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--accent-strong)] hover:bg-[var(--accent-wash)]">Admin portal</Link>}
+                    <button type="button" role="menuitem" onClick={handleLogout} className="flex w-full items-center gap-2 border-t border-[var(--line)] px-3 py-2 text-left text-sm text-[var(--ink-soft)] hover:text-[var(--accent-strong)]">Log out</button>
                   </div>
-                  <Link to="/profile/me" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--ink-soft)] hover:bg-[var(--accent-wash)] hover:text-[var(--accent-strong)]">My profile</Link>
-                  <Link to="/my-bookings" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--ink-soft)] hover:bg-[var(--accent-wash)] hover:text-[var(--accent-strong)]">Equipment bookings</Link>
-                  {isAdmin && <Link to="/admin/dashboard" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--accent-strong)] hover:bg-[var(--accent-wash)]">Admin portal</Link>}
-                  <button type="button" role="menuitem" onClick={handleLogout} className="flex w-full items-center gap-2 border-t border-[var(--line)] px-3 py-2 text-left text-sm text-[var(--ink-soft)] hover:text-[var(--accent-strong)]">Log out</button>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            </>
           ) : (
             <>
               <a href={gmailComposeUrl} target="_blank" rel="noreferrer" className="nav-join">Join the lab</a>
