@@ -146,9 +146,54 @@ export const ProjectDetailPage: React.FC = () => {
 
       {/* Team Members List */}
       <div className="tech-card p-6 space-y-4">
-        <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-          Team members ({project.members.length})
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            Team members ({project.members.length})
+          </h3>
+          {isLeader && (
+            <Link
+              to={`/projects/${project.id}/manage`}
+              className="text-xs font-bold text-emerald-700 hover:text-emerald-800 underline"
+            >
+              Manage in Console &rarr;
+            </Link>
+          )}
+        </div>
+
+        {/* Pending Requests Alert for Leaders */}
+        {isLeader && project.members.some((m) => m.status === 'Pending') && (
+          <div className="p-4 rounded-xl bg-amber-50 border border-amber-300 space-y-3">
+            <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+              Pending Join Applications ({project.members.filter((m) => m.status === 'Pending').length})
+            </h4>
+            <div className="space-y-2">
+              {project.members
+                .filter((m) => m.status === 'Pending')
+                .map((pendingMember) => (
+                  <div key={pendingMember.userId} className="flex items-center justify-between bg-white p-3 rounded-lg border border-amber-200">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold text-xs flex items-center justify-center">
+                        {pendingMember.fullName.charAt(0)}
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-slate-900 block">{pendingMember.fullName}</span>
+                        <span className="text-[11px] text-slate-600">Role requested: <strong>{pendingMember.roleInProject}</strong></span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={async () => {
+                        await projectService.approveMember(project.id, pendingMember.userId);
+                        fetchProject(project.id);
+                      }}
+                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg shadow-sm"
+                    >
+                      Approve Member
+                    </button>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {project.members.map((member, idx) => (
@@ -167,11 +212,25 @@ export const ProjectDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
-                member.status === 'Active' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-amber-100 text-amber-800 border border-amber-300'
-              }`}>
-                {member.status === 'Active' ? 'Active' : 'Pending'}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                  member.status === 'Active' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-amber-100 text-amber-800 border border-amber-300'
+                }`}>
+                  {member.status === 'Active' ? 'Active' : 'Pending'}
+                </span>
+
+                {isLeader && member.status === 'Pending' && (
+                  <button
+                    onClick={async () => {
+                      await projectService.approveMember(project.id, member.userId);
+                      fetchProject(project.id);
+                    }}
+                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded"
+                  >
+                    Approve
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>

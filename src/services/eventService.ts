@@ -1,5 +1,5 @@
 import { apiClient } from './apiClient';
-import { TechEvent } from '@/types';
+import { TechEvent, EventAttendee } from '@/types';
 
 export const mockEvents: TechEvent[] = [
   {
@@ -95,6 +95,66 @@ export const eventService = {
         ev.registeredCount += 1;
       }
       return { success: true, message: 'Đăng ký tham gia sự kiện thành công!' };
+    }
+  },
+
+  async createEvent(data: Omit<TechEvent, 'id' | 'registeredCount' | 'isRegistered'>): Promise<TechEvent> {
+    try {
+      const response = await apiClient.post('/events', data);
+      return response.data;
+    } catch {
+      const newEv: TechEvent = {
+        ...data,
+        id: 'ev-' + Date.now(),
+        registeredCount: 0,
+        isRegistered: false,
+      };
+      mockEvents.unshift(newEv);
+      return newEv;
+    }
+  },
+
+  async getEventAttendees(eventId: string): Promise<EventAttendee[]> {
+    try {
+      const response = await apiClient.get(`/events/${eventId}/attendees`);
+      return response.data;
+    } catch {
+      return [
+        {
+          userId: 'usr-101',
+          fullName: 'Alex Nguyễn',
+          email: 'alex.nguyen@vuonai.space',
+          avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+          registeredAt: '2026-08-20T10:00:00Z',
+          isCheckedIn: false,
+        },
+        {
+          userId: 'usr-104',
+          fullName: 'Hoàng Nam',
+          email: 'hoang.nam@vuonai.space',
+          avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+          registeredAt: '2026-08-21T14:30:00Z',
+          isCheckedIn: true,
+          checkedInAt: '2026-08-24T08:00:00Z',
+        },
+        {
+          userId: 'usr-102',
+          fullName: 'Minh Trần',
+          email: 'minh.tran@vuonai.space',
+          avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+          registeredAt: '2026-08-22T09:15:00Z',
+          isCheckedIn: false,
+        },
+      ];
+    }
+  },
+
+  async checkInAttendee(eventId: string, attendeeUserId: string): Promise<{ success: boolean }> {
+    try {
+      const response = await apiClient.patch(`/events/${eventId}/checkin/${attendeeUserId}`);
+      return response.data;
+    } catch {
+      return { success: true };
     }
   }
 };

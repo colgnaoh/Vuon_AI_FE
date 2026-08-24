@@ -131,6 +131,16 @@ export interface TechEvent {
   imageUrl?: string;
 }
 
+export interface EventAttendee {
+  userId: string;
+  fullName: string;
+  email?: string;
+  avatarUrl?: string;
+  registeredAt: string;
+  isCheckedIn: boolean;
+  checkedInAt?: string;
+}
+
 export interface Mentor {
   id: string;
   fullName: string;
@@ -145,6 +155,23 @@ export interface Mentor {
   contactEmail?: string;
   linkedinUrl?: string;
   githubUrl?: string;
+}
+
+export type MentorRequestStatus = 'Pending' | 'Approved' | 'Rejected';
+
+export interface MentorRequest {
+  id: string;
+  mentorId: string;
+  mentorName?: string;
+  studentId: string;
+  studentName: string;
+  studentAvatar?: string;
+  projectId?: string;
+  projectTitle?: string;
+  topic: string;
+  description: string;
+  status: MentorRequestStatus;
+  createdAt: string;
 }
 
 export interface Lab {

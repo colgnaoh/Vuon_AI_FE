@@ -8,6 +8,7 @@ import { AdminLayout } from '@/layouts/AdminLayout';
 import { ProtectedRoute } from '@/pages/auth/ProtectedRoute';
 
 import { LandingPage } from '@/pages/LandingPage';
+import { LoginPage } from '@/pages/auth/LoginPage';
 import { ProfilePage } from '@/pages/profile/ProfilePage';
 import { IdeasPage } from '@/pages/ideas/IdeasPage';
 import { IdeaDetailPage } from '@/pages/ideas/IdeaDetailPage';
@@ -21,6 +22,7 @@ import { EventsPage } from '@/pages/events/EventsPage';
 import { EventDetailPage } from '@/pages/events/EventDetailPage';
 import { MentorsPage } from '@/pages/mentors/MentorsPage';
 import { MentorDetailPage } from '@/pages/mentors/MentorDetailPage';
+import { MentorDashboardPage } from '@/pages/mentors/MentorDashboardPage';
 import { LabsPage } from '@/pages/labs/LabsPage';
 import { NotificationsPage } from '@/pages/notifications/NotificationsPage';
 
@@ -50,6 +52,7 @@ export const App: React.FC = () => {
             {/* Public & Member Routes wrapped in RootLayout */}
             <Route element={<RootLayout />}>
               <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
               <Route path="/directory" element={<Navigate to="/ideas" replace />} />
               <Route path="/ideas" element={<IdeasPage />} />
               <Route path="/ideas/:id" element={<IdeaDetailPage />} />
@@ -60,6 +63,14 @@ export const App: React.FC = () => {
               <Route path="/events/:id" element={<EventDetailPage />} />
               <Route path="/mentors" element={<MentorsPage />} />
               <Route path="/mentors/:id" element={<MentorDetailPage />} />
+              <Route
+                path="/mentor/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <MentorDashboardPage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/labs" element={<LabsPage />} />
 
               {/* Protected Member Routes */}

@@ -4,6 +4,7 @@ import { Dialog } from '@/components/Dialog';
 import { ErrorState, LoadingState } from '@/components/AsyncState';
 import { equipmentService } from '@/services/equipmentService';
 import { Equipment } from '@/types';
+import { AvailabilityChecker } from '@/components/equipment/AvailabilityChecker';
 
 const categories = ['All', 'AI', 'Robotics', 'IoT', 'Embedded', 'Maker', 'Vision'];
 
@@ -99,6 +100,9 @@ export const EquipmentPage: React.FC = () => {
       {selectedItem && <Dialog open={Boolean(selectedItem)} onClose={() => setSelectedItem(null)} title={selectedItem.name} size="md">
         {bookingSuccess ? <div className="space-y-3 py-6 text-center"><p className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--accent)]">booking confirmed</p><h2 className="text-3xl">Your reservation is held.</h2><p className="text-sm text-[var(--ink-soft)]">Taking you to your bookings.</p></div> : <form onSubmit={handleSubmitBooking} className="space-y-5">
           {bookingError && <div role="alert" className="border-l-2 border-[#bb7765] bg-[#f5e8e3] px-3 py-2 text-xs text-[#8c4535]">{bookingError}</div>}
+          
+          <AvailabilityChecker equipmentId={selectedItem.id} />
+
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2"><div><label htmlFor="booking-start" className="field-label">pickup date</label><input id="booking-start" type="date" required min={new Date().toISOString().split('T')[0]} value={startDate} onChange={(event) => setStartDate(event.target.value)} className="form-field" /></div><div><label htmlFor="booking-end" className="field-label">expected return date</label><input id="booking-end" type="date" required min={startDate} value={endDate} onChange={(event) => setEndDate(event.target.value)} className="form-field" /></div></div>
           <div><label htmlFor="booking-purpose" className="field-label">what will you use it for?</label><textarea id="booking-purpose" rows={4} required value={purpose} onChange={(event) => setPurpose(event.target.value)} placeholder="Briefly describe the experiment you want to run" className="form-field" /></div>
           <div className="border-l-2 border-[var(--accent)] bg-[var(--accent-wash)] p-3 text-xs leading-5 text-[var(--ink-soft)]"><span className="field-label mr-2 inline">note</span>Dates are checked for conflicts before the request reaches the lab manager.</div>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { NotificationBell } from '@/components/navigation/NotificationBell';
+import { LogIn } from 'lucide-react';
 
 const navLinks = [
   { name: 'Ideas', path: '/ideas', index: '01' },
@@ -101,6 +102,7 @@ export const Navbar: React.FC = () => {
                       <p className="truncate text-xs text-[var(--ink-soft)]">{user.email}</p>
                     </div>
                     <Link to="/profile/me" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--ink-soft)] hover:bg-[var(--accent-wash)] hover:text-[var(--accent-strong)]">My profile</Link>
+                    <Link to="/mentor/dashboard" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--ink-soft)] hover:bg-[var(--accent-wash)] hover:text-[var(--accent-strong)]">Mentor Dashboard</Link>
                     <Link to="/my-bookings" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--ink-soft)] hover:bg-[var(--accent-wash)] hover:text-[var(--accent-strong)]">Equipment bookings</Link>
                     <Link to="/notifications" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--ink-soft)] hover:bg-[var(--accent-wash)] hover:text-[var(--accent-strong)]">Notifications</Link>
                     {isAdmin && <Link to="/admin/dashboard" role="menuitem" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-[var(--accent-strong)] hover:bg-[var(--accent-wash)]">Admin portal</Link>}
@@ -110,9 +112,14 @@ export const Navbar: React.FC = () => {
               </div>
             </>
           ) : (
-            <>
-              <a href={gmailComposeUrl} target="_blank" rel="noreferrer" className="nav-join">Join the lab</a>
-            </>
+            <div className="flex items-center gap-3">
+              <Link to="/login" className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-mono font-bold uppercase tracking-wider text-white bg-[var(--accent-strong)] hover:bg-[var(--accent)] rounded transition-all shadow-sm hover:-translate-y-0.5">
+                <LogIn className="w-3.5 h-3.5" /> Sign In
+              </Link>
+              <a href={gmailComposeUrl} target="_blank" rel="noreferrer" className="nav-join">
+                Join the lab
+              </a>
+            </div>
           )}
         </div>
 
@@ -135,9 +142,14 @@ export const Navbar: React.FC = () => {
                 <button type="button" onClick={handleLogout} className="border border-[var(--line)] p-3 text-sm text-[var(--ink-soft)]">Log out</button>
               </>
             ) : (
-              <>
-                <a href={gmailComposeUrl} target="_blank" rel="noreferrer" onClick={() => setMobileMenuOpen(false)}>Join the lab</a>
-              </>
+              <div className="flex flex-col gap-2 w-full">
+                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="text-center font-mono text-xs font-bold uppercase tracking-wider bg-[var(--accent-strong)] text-white p-3 rounded">
+                  Sign In / Log In
+                </Link>
+                <a href={gmailComposeUrl} target="_blank" rel="noreferrer" onClick={() => setMobileMenuOpen(false)}>
+                  Join the lab
+                </a>
+              </div>
             )}
           </div>
         </nav>

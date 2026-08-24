@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 import { LoadingState, ErrorState } from '@/components/AsyncState';
 import { eventService } from '@/services/eventService';
 import { TechEvent } from '@/types';
-import { Calendar, MapPin, Users, Sparkles, Search, Filter } from 'lucide-react';
+import { CreateEventModal } from '@/components/events/CreateEventModal';
+import { Calendar, MapPin, Users, Sparkles, Search, Plus, ArrowRight } from 'lucide-react';
 
 export const EventsPage: React.FC = () => {
+  const { user, isAdmin } = useAuth();
   const [events, setEvents] = useState<TechEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [createModalOpen, setCreateModalOpen] = useState(false);
 
   const categories = ['All', 'Workshop', 'Tech Talk', 'Hackathon', 'Build Night', 'Demo Day'];
+
+  const canManageEvents = isAdmin || user?.globalRole === 'LabManager';
 
   useEffect(() => {
     void fetchEvents();
@@ -31,6 +37,10 @@ export const EventsPage: React.FC = () => {
     }
   };
 
+  const handleEventCreated = (newEvent: TechEvent) => {
+    setEvents((prev) => [newEvent, ...prev]);
+  };
+
   const filteredEvents = events.filter(e =>
     e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     e.speaker.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -47,20 +57,26 @@ export const EventsPage: React.FC = () => {
             Tham gia các buổi Workshop thực chiến, Hackathon lập trình nhúng và Tech Talk chuyên sâu cùng dàn diễn giả hàng đầu.
           </p>
         </div>
+
+        {canManageEvents && (
+          <button
+            onClick={() => setCreateModalOpen(true)}
+            className="btn-primary shrink-0 self-start md:self-auto"
+          >
+            <Plus className="w-4 h-4" /> Tạo sự kiện mới
+          </button>
+        )}
       </header>
 
       {/* Filter & Search Bar */}
-      <div className="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between border-b border-gray-800 pb-6">
-        <div className="flex flex-wrap gap-2 w-full md:w-auto">
+      <div className="my-8 flex flex-col md:flex-row gap-4 items-center justify-between border-b border-[var(--line)] pb-6">
+        <div className="filter-row !border-0 !p-0 w-full md:w-auto">
           {categories.map((cat) => (
             <button
               key={cat}
+              type="button"
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                selectedCategory === cat
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-                  : 'bg-gray-900/60 text-gray-400 hover:text-white border border-gray-800'
-              }`}
+              className={`filter-chip ${selectedCategory === cat ? '!bg-[var(--accent)] !text-white' : ''}`}
             >
               {cat}
             </button>
@@ -68,13 +84,13 @@ export const EventsPage: React.FC = () => {
         </div>
 
         <div className="relative w-full md:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-soft)]" />
           <input
             type="text"
             placeholder="Tìm theo tên, diễn giả..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-900/80 border border-gray-800 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+            className="w-full bg-[var(--paper-bright)] border border-[var(--line)] rounded-lg pl-9 pr-4 py-2 text-xs text-[var(--ink)] placeholder-[var(--ink-soft)] focus:outline-none focus:border-[var(--accent)]"
           />
         </div>
       </div>
@@ -84,9 +100,9 @@ export const EventsPage: React.FC = () => {
       ) : error ? (
         <ErrorState message={error} onRetry={fetchEvents} />
       ) : filteredEvents.length === 0 ? (
-        <div className="empty-state py-16 text-center border border-dashed border-gray-800 rounded-2xl">
-          <Sparkles className="w-10 h-10 text-blue-500 mx-auto mb-3" />
-          <p className="text-gray-400">Không tìm thấy sự kiện phù hợp.</p>
+        <div className="empty-state py-16 text-center border border-dashed border-[var(--line)] rounded-2xl">
+          <Sparkles className="w-10 h-10 text-[var(--accent)] mx-auto mb-3" />
+          <p className="text-[var(--ink-soft)] font-medium text-sm">Không tìm thấy sự kiện phù hợp.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -94,11 +110,11 @@ export const EventsPage: React.FC = () => {
             <Link
               key={event.id}
               to={`/events/${event.id}`}
-              className="group bg-gray-900/60 border border-gray-800 hover:border-blue-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 flex flex-col justify-between"
+              className="group tech-card bg-[var(--paper-bright)] border border-[var(--line)] hover:border-[var(--accent)] rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[var(--shadow-paper)] flex flex-col justify-between text-left no-underline"
             >
               <div>
                 {/* Event Image Banner */}
-                <div className="relative h-44 w-full overflow-hidden bg-gray-950">
+                <div className="relative h-44 w-full overflow-hidden bg-[var(--paper-deep)] border-b border-[var(--line)]">
                   {event.imageUrl ? (
                     <img
                       src={event.imageUrl}
@@ -106,57 +122,65 @@ export const EventsPage: React.FC = () => {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-900/30 to-purple-900/30">
-                      <Sparkles className="w-12 h-12 text-blue-400" />
+                    <div className="w-full h-full flex items-center justify-center bg-[var(--accent-wash)]">
+                      <Sparkles className="w-12 h-12 text-[var(--accent)]" />
                     </div>
                   )}
-                  <span className="absolute top-3 left-3 bg-gray-950/80 backdrop-blur-md border border-gray-800 text-blue-400 text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="absolute top-3 left-3 bg-[var(--accent-strong)] text-white text-[0.68rem] font-mono font-bold px-2.5 py-1 rounded shadow-md uppercase border border-white/20">
                     {event.category}
                   </span>
                   {event.isRegistered && (
-                    <span className="absolute top-3 right-3 bg-emerald-500/90 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                    <span className="absolute top-3 right-3 bg-[var(--accent)] text-white text-[0.68rem] font-mono font-bold px-2.5 py-1 rounded shadow-md">
                       Đã đăng ký
                     </span>
                   )}
                 </div>
 
                 {/* Event Card Content */}
-                <div className="p-5">
-                  <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors line-clamp-2 mb-3">
+                <div className="p-5 space-y-3">
+                  <h3 className="text-xl font-extrabold text-[var(--ink)] group-hover:text-[var(--accent)] transition-colors line-clamp-2 leading-tight">
                     {event.title}
                   </h3>
-                  <p className="text-gray-400 text-sm line-clamp-2 mb-4">
+                  <p className="text-[var(--ink-soft)] text-xs line-clamp-2 leading-relaxed">
                     {event.description}
                   </p>
 
-                  <div className="space-y-2 text-xs text-gray-400">
+                  <div className="space-y-2 text-xs text-[var(--ink-soft)] pt-2 border-t border-[var(--line)]">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-blue-400 shrink-0" />
-                      <span>{new Date(event.date).toLocaleString('vi-VN', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                      <Calendar className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                      <span className="font-mono text-[0.72rem]">{new Date(event.date).toLocaleString('vi-VN', { dateStyle: 'medium', timeStyle: 'short' })}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-purple-400 shrink-0" />
+                      <MapPin className="w-4 h-4 text-[var(--accent)] shrink-0" />
                       <span className="truncate">{event.location}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-amber-400 shrink-0" />
-                      <span>{event.registeredCount} / {event.maxParticipants || 100} lượt đăng ký</span>
+                      <Users className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                      <span className="font-mono text-[0.72rem]">{event.registeredCount} / {event.maxParticipants || 100} lượt đăng ký</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="p-5 pt-0">
-                <div className="border-t border-gray-800/80 pt-4 flex items-center justify-between">
-                  <span className="text-xs font-medium text-gray-400">Diễn giả: <strong className="text-white">{event.speaker}</strong></span>
-                  <span className="text-xs text-blue-400 font-semibold group-hover:translate-x-1 transition-transform">
-                    Chi tiết &rarr;
+                <div className="border-t border-[var(--line)] pt-3 flex items-center justify-between">
+                  <span className="text-xs text-[var(--ink-soft)]">Diễn giả: <strong className="text-[var(--ink)]">{event.speaker}</strong></span>
+                  <span className="text-xs text-[var(--accent-strong)] font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    Chi tiết <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
               </div>
             </Link>
           ))}
         </div>
+      )}
+
+      {createModalOpen && (
+        <CreateEventModal
+          open={createModalOpen}
+          onClose={() => setCreateModalOpen(false)}
+          onSuccess={handleEventCreated}
+        />
       )}
     </div>
   );

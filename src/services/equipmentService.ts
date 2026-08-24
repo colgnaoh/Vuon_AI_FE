@@ -153,4 +153,21 @@ export const equipmentService = {
       }
     }
   },
+
+  async checkAvailability(id: string, startDate: string, endDate: string): Promise<{ isAvailable: boolean; message?: string }> {
+    try {
+      const response = await apiClient.get(`/equipment/${id}/availability`, {
+        params: { startDate, endDate }
+      });
+      return response.data;
+    } catch {
+      // Mock logic check
+      const isOverlapped = mockBookings.some((b) =>
+        b.equipmentId === id &&
+        b.status === 'Active' &&
+        ((startDate >= b.startDate && startDate <= b.endDate) || (endDate >= b.startDate && endDate <= b.endDate))
+      );
+      return { isAvailable: !isOverlapped };
+    }
+  },
 };

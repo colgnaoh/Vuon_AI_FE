@@ -5,7 +5,6 @@ import { mentorService } from '@/services/mentorService';
 import { Mentor } from '@/types';
 import { ArrowLeft, Star, Users, Mail, CheckCircle2, MessageSquarePlus, X } from 'lucide-react';
 
-
 export const MentorDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -68,22 +67,22 @@ export const MentorDetailPage: React.FC = () => {
     <div className="page-shell">
       <button
         onClick={() => navigate('/mentors')}
-        className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white mb-6 transition-colors"
+        className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[var(--ink-soft)] hover:text-[var(--accent)] mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" /> Quay lại danh sách Mentor
       </button>
 
       {/* Main Mentor Card */}
-      <div className="bg-gray-900/60 border border-gray-800 rounded-3xl p-6 md:p-10 mb-8">
+      <div className="tech-card bg-[var(--paper-bright)] border border-[var(--line)] shadow-[var(--shadow-paper)] p-6 md:p-10 mb-8">
         <div className="flex flex-col md:flex-row gap-8 items-start">
           {mentor.avatarUrl ? (
             <img
               src={mentor.avatarUrl}
               alt={mentor.fullName}
-              className="w-28 h-28 md:w-36 md:h-36 rounded-full object-cover border-4 border-purple-500/40 shrink-0 shadow-xl shadow-purple-500/10"
+              className="w-28 h-28 md:w-36 md:h-36 rounded-full object-cover border-4 border-[var(--accent-soft)] shrink-0 shadow"
             />
           ) : (
-            <div className="w-28 h-28 md:w-36 md:h-36 rounded-full bg-purple-600/30 border-4 border-purple-500/40 flex items-center justify-center text-purple-200 font-bold text-4xl shrink-0">
+            <div className="w-28 h-28 md:w-36 md:h-36 rounded-full bg-[var(--accent-soft)] border-4 border-[var(--accent-wash)] flex items-center justify-center text-[var(--accent-strong)] font-bold text-4xl shrink-0">
               {mentor.fullName.charAt(0)}
             </div>
           )}
@@ -91,39 +90,39 @@ export const MentorDetailPage: React.FC = () => {
           <div className="flex-1 space-y-4">
             <div>
               <div className="flex flex-wrap items-center gap-3 mb-1">
-                <h1 className="text-2xl md:text-3xl font-extrabold text-white">{mentor.fullName}</h1>
-                <span className="bg-purple-500/20 text-purple-300 text-xs font-semibold px-3 py-1 rounded-full border border-purple-500/30">
+                <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--ink)]">{mentor.fullName}</h1>
+                <span className="bg-[var(--accent-wash)] text-[var(--accent-strong)] text-xs font-mono font-bold px-3 py-1 rounded border border-[var(--accent-soft)]">
                   Certified Vườn AI Mentor
                 </span>
               </div>
-              <p className="text-purple-400 font-medium text-base">{mentor.title}</p>
-              {mentor.company && <p className="text-gray-400 text-sm">{mentor.company}</p>}
+              <p className="text-[var(--accent-strong)] font-bold text-sm">{mentor.title}</p>
+              {mentor.company && <p className="text-[var(--ink-soft)] font-mono text-xs mt-0.5">{mentor.company}</p>}
             </div>
 
-            <p className="text-gray-300 text-base leading-relaxed max-w-3xl">
+            <p className="text-[var(--ink)] text-sm leading-relaxed max-w-3xl">
               {mentor.bio}
             </p>
 
-            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 pt-2 border-t border-gray-800/80">
-              <div className="flex items-center gap-1.5 text-amber-400 font-semibold">
-                <Star className="w-4 h-4 fill-amber-400" /> {mentor.rating} / 5.0 Rating
+            <div className="flex flex-wrap items-center gap-6 text-xs text-[var(--ink-soft)] font-mono pt-2 border-t border-[var(--line)]">
+              <div className="flex items-center gap-1.5 text-amber-600 font-bold">
+                <Star className="w-4 h-4 fill-amber-500 text-amber-500" /> {mentor.rating} / 5.0 Rating
               </div>
-              <div className="flex items-center gap-1.5 text-blue-400">
-                <Users className="w-4 h-4" /> {mentor.totalMentees} Dự án đã tư vấn
+              <div className="flex items-center gap-1.5 text-[var(--ink)] font-semibold">
+                <Users className="w-4 h-4 text-[var(--accent)]" /> {mentor.totalMentees} Dự án đã tư vấn
               </div>
               {mentor.contactEmail && (
-                <div className="flex items-center gap-1.5 text-gray-300">
-                  <Mail className="w-4 h-4 text-purple-400" /> {mentor.contactEmail}
+                <div className="flex items-center gap-1.5 text-[var(--ink-soft)]">
+                  <Mail className="w-4 h-4 text-[var(--accent)]" /> {mentor.contactEmail}
                 </div>
               )}
             </div>
 
             {/* Expertise Badges */}
             <div className="pt-2">
-              <div className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-2">Lĩnh vực chuyên môn chính:</div>
+              <div className="text-[0.65rem] text-[var(--ink-soft)] font-mono font-bold uppercase tracking-wider mb-2">Lĩnh vực chuyên môn chính:</div>
               <div className="flex flex-wrap gap-2">
                 {mentor.expertise.map((exp) => (
-                  <span key={exp} className="bg-purple-950/80 text-purple-200 text-xs px-3 py-1.5 rounded-lg border border-purple-800/60 font-medium">
+                  <span key={exp} className="bg-[var(--accent-wash)] text-[var(--accent-strong)] text-xs font-mono font-semibold px-3 py-1.5 rounded border border-[var(--accent-soft)]">
                     {exp}
                   </span>
                 ))}
@@ -133,9 +132,9 @@ export const MentorDetailPage: React.FC = () => {
             <div className="pt-4">
               <button
                 onClick={() => setShowModal(true)}
-                className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-purple-600/25 transition-all"
+                className="btn-primary text-xs"
               >
-                <MessageSquarePlus className="w-5 h-5" /> Gửi yêu cầu kết nối / Đặt lịch tư vấn
+                <MessageSquarePlus className="w-4 h-4" /> Gửi yêu cầu kết nối / Đặt lịch tư vấn
               </button>
             </div>
           </div>
@@ -144,75 +143,75 @@ export const MentorDetailPage: React.FC = () => {
 
       {/* Consultation Request Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-gray-900 border border-gray-800 rounded-3xl p-6 md:p-8 max-w-lg w-full relative shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-[var(--paper-bright)] border border-[var(--line)] rounded-2xl p-6 md:p-8 max-w-lg w-full relative shadow-[var(--shadow-paper)]">
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-5 right-5 text-gray-400 hover:text-white"
+              className="absolute top-5 right-5 text-[var(--ink-soft)] hover:text-[var(--ink)]"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-xl font-bold text-white mb-2">
+            <h2 className="text-xl font-bold text-[var(--ink)] mb-2">
               Gửi yêu cầu tư vấn đến {mentor.fullName}
             </h2>
-            <p className="text-xs text-gray-400 mb-6">
+            <p className="text-xs text-[var(--ink-soft)] mb-6">
               Vui lòng cung cấp thông tin dự án hoặc chủ đề bạn cần tư vấn để Mentor chuẩn bị nội dung hỗ trợ tốt nhất.
             </p>
 
             {modalSuccess ? (
-              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm flex items-center gap-2 mb-4">
+              <div className="p-4 rounded-xl bg-[var(--accent-wash)] border border-[var(--accent-soft)] text-[var(--accent-strong)] text-xs font-bold flex items-center gap-2 mb-4">
                 <CheckCircle2 className="w-5 h-5 shrink-0" />
                 <span>{modalSuccess}</span>
               </div>
             ) : (
               <form onSubmit={handleConsultationSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">Chủ đề tư vấn *</label>
+                  <label className="field-label">Chủ đề tư vấn *</label>
                   <input
                     type="text"
                     required
                     placeholder="Ví dụ: Tối ưu mô hình YOLOv8 trên Jetson Nano"
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
-                    className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500"
+                    className="form-field"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">Mô tả chi tiết bài toán / khó khăn *</label>
+                  <label className="field-label">Mô tả chi tiết bài toán / khó khăn *</label>
                   <textarea
                     required
                     rows={4}
                     placeholder="Mô tả sơ lược về dự án, khó khăn hiện tại và những câu hỏi bạn muốn được tư vấn..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500"
+                    className="form-field"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">Thời gian mong muốn (Không bắt buộc)</label>
+                  <label className="field-label">Thời gian mong muốn (Không bắt buộc)</label>
                   <input
                     type="date"
                     value={preferredDate}
                     onChange={(e) => setPreferredDate(e.target.value)}
-                    className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500"
+                    className="form-field"
                   />
                 </div>
 
-                <div className="pt-2 flex justify-end gap-3">
+                <div className="pt-2 flex justify-end gap-3 border-t border-[var(--line)]">
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="px-4 py-2.5 rounded-xl border border-gray-800 text-sm text-gray-400 hover:text-white"
+                    className="btn-secondary"
                   >
                     Hủy
                   </button>
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold shadow-lg shadow-purple-600/25"
+                    className="btn-primary disabled:opacity-50"
                   >
                     {submitting ? 'Đang gửi...' : 'Gửi yêu cầu'}
                   </button>
