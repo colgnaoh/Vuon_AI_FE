@@ -57,7 +57,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const isAuthenticated = !!token && !!user;
-  const isAdmin = user?.globalRole === 'Admin' || user?.globalRole === 'LabManager';
+  const role = user?.globalRole ? user.globalRole.toLowerCase() : '';
+  const isAdmin = role === 'admin' || role === 'labmanager' || role === 'lab_manager';
 
   return (
     <AuthContext.Provider value={{ user, token, isAuthenticated, isAdmin, login, logout }}>
