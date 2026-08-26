@@ -35,7 +35,8 @@ export const LoginPage: React.FC = () => {
       login(res.token, res.user);
       
       // Redirect depending on role
-      if (res.user.globalRole === 'Admin' || res.user.globalRole === 'LabManager') {
+      const userRole = res.user.globalRole ? res.user.globalRole.toLowerCase() : '';
+      if (userRole === 'admin' || userRole === 'labmanager' || userRole === 'lab_manager') {
         navigate('/admin/dashboard');
       } else {
         navigate('/profile/me');
