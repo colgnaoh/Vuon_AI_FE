@@ -101,9 +101,9 @@ export const authService = {
       return {
         token,
         user: {
-          id: authData.user.id,
-          email: authData.user.email || data.email,
-          fullName: authData.user.email?.split('@')[0].toUpperCase() || 'User',
+          id: authData.session.user.id,
+          email: authData.session.user.email || data.email,
+          fullName: authData.session.user.email?.split('@')[0].toUpperCase() || 'User',
           globalRole: 'Member',
           avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
         },
@@ -155,8 +155,8 @@ export const authService = {
       return {
         token,
         user: {
-          id: authData.user.id,
-          email: authData.user.email || data.email,
+          id: authData.session.user.id,
+          email: authData.session.user.email || data.email,
           fullName: data.fullName,
           globalRole: 'Member',
           avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
