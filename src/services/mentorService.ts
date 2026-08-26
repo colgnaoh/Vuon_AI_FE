@@ -93,11 +93,11 @@ export const mentorService = {
   async getMentors(expertise?: string): Promise<Mentor[]> {
     try {
       const response = await apiClient.get('/mentors', { params: { expertise } });
-      return response.data;
+      return Array.isArray(response.data) ? response.data : mockMentors;
     } catch {
       if (!expertise || expertise === 'All') return mockMentors;
       return mockMentors.filter((m) =>
-        m.expertise.some((e) => e.toLowerCase().includes(expertise.toLowerCase()))
+        (m.expertise || []).some((e) => e.toLowerCase().includes(expertise.toLowerCase()))
       );
     }
   },

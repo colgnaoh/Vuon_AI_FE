@@ -31,10 +31,10 @@ export const MentorsPage: React.FC = () => {
     }
   };
 
-  const filteredMentors = mentors.filter(m =>
-    m.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    m.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    m.expertise.some(e => e.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredMentors = (mentors || []).filter(m =>
+    (m.fullName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (m.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (m.expertise || []).some(e => e.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
@@ -124,7 +124,7 @@ export const MentorsPage: React.FC = () => {
 
                 {/* Expertise Badges */}
                 <div className="flex flex-wrap gap-1.5 mb-5">
-                  {mentor.expertise.map((exp) => (
+                  {(mentor.expertise || []).map((exp) => (
                     <span key={exp} className="bg-[var(--accent-wash)] text-[var(--accent-strong)] text-[0.68rem] font-mono px-2.5 py-1 rounded border border-[var(--accent-soft)]">
                       {exp}
                     </span>
