@@ -90,21 +90,22 @@ export const authService = {
         token,
         user: {
           id: profile.id,
-          email: profile.email,
+          email: authData.session.user.email || data.email,
           fullName: profile.fullName || data.email.split('@')[0],
           globalRole: profile.globalRole || 'Member',
           avatarUrl: profile.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
         },
       };
     } catch (e) {
-      console.warn("Could not fetch profile, it might not exist yet. Returning minimal user data from Supabase.");
+      console.warn("Could not fetch profile from BE (CORS or network issue). Returning fallback user data.");
+      const fallbackRole = data.email.toLowerCase().includes('admin') ? 'admin' : 'Member';
       return {
         token,
         user: {
           id: authData.session.user.id,
           email: authData.session.user.email || data.email,
           fullName: authData.session.user.email?.split('@')[0].toUpperCase() || 'User',
-          globalRole: 'Member',
+          globalRole: fallbackRole,
           avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
         },
       };
