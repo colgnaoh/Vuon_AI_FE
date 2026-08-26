@@ -53,6 +53,23 @@ export const adminService = {
     }
   },
 
+  async createUser(data: { email: string; password?: string; fullName: string; globalRole: GlobalRole; bio?: string; expertise?: string[] }): Promise<void> {
+    try {
+      await apiClient.post('/admin/users', data);
+    } catch {
+      const newUser = {
+        id: 'usr-' + Date.now(),
+        fullName: data.fullName,
+        globalRole: data.globalRole,
+        skills: data.expertise || ['AI', 'Python'],
+        interests: ['Machine Learning'],
+        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+        createdAt: new Date().toISOString()
+      };
+      mockProfiles.unshift(newUser);
+    }
+  },
+
   // Booking Approvals
   async getPendingBookings(): Promise<AdminBookingApproval[]> {
     try {
