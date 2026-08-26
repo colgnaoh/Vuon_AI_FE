@@ -90,21 +90,27 @@ export const authService = {
         token,
         user: {
           id: profile.id,
-          email: authData.session.user.email || data.email,
+          email: authData.session.user.email || data.email || profile.email,
           fullName: profile.fullName || data.email.split('@')[0],
-          globalRole: profile.globalRole || 'Member',
+          globalRole: profile.globalRole || (data.email.toLowerCase().includes('admin') ? 'Admin' : 'Member'),
           avatarUrl: profile.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
         },
       };
     } catch (e) {
-      console.warn("Could not fetch profile from BE (CORS or network issue). Returning fallback user data.");
-      const fallbackRole = data.email.toLowerCase().includes('admin') ? 'admin' : 'Member';
+      console.warn("Could not fetch profile from BE, using fallback from email/session.");
+      const email = authData.session.user.email || data.email;
+      const fallbackRole: GlobalRole = email.toLowerCase().includes('admin')
+        ? 'Admin'
+        : email.toLowerCase().includes('lab')
+        ? 'LabManager'
+        : 'Member';
+
       return {
         token,
         user: {
           id: authData.session.user.id,
-          email: authData.session.user.email || data.email,
-          fullName: authData.session.user.email?.split('@')[0].toUpperCase() || 'User',
+          email,
+          fullName: email.split('@')[0].toUpperCase(),
           globalRole: fallbackRole,
           avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
         },

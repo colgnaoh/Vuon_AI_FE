@@ -1,4 +1,4 @@
-export type GlobalRole = 'Visitor' | 'Member' | 'LabManager' | 'Admin' | 'admin' | 'lab_manager' | 'visitor' | 'member';
+export type GlobalRole = 'Visitor' | 'Member' | 'LabManager' | 'Admin';
 
 export interface User {
   id: string;
