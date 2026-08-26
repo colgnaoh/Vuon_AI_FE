@@ -64,6 +64,7 @@ export const authService = {
       const response = await apiClient.post('/auth/login', data);
       return response.data;
     } catch (err) {
+      console.warn('[AuthService] Backend endpoint /auth/login unavailable (404). Using mock authentication fallback.');
       // Mock Fallback matching presets or custom email
       const matchedPreset = DEMO_PRESETS.find((p) => p.email.toLowerCase() === data.email.toLowerCase());
       if (matchedPreset) {

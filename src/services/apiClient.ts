@@ -23,11 +23,17 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Handle 401 Unauthorized globally
+// Response Interceptor: Handle 401 Unauthorized globally & unwrap { success: true, data: ... }
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.data && typeof response.data === 'object' && response.data.success === true && response.data.data !== undefined) {
+      response.data = response.data.data;
+    }
+    return response;
+  },
   (error) => {
-    if (error.response && error.response.status === 401) {
+    const token = localStorage.getItem('vuon_token');
+    if (error.response && error.response.status === 401 && token && !token.startsWith('mock-jwt-token')) {
       localStorage.removeItem('vuon_token');
       localStorage.removeItem('vuon_user');
       // Return to the public studio when a protected session expires.

@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   useEffect(() => {
-    if (token) {
+    if (token && !token.startsWith('mock-jwt-token')) {
       try {
         const decoded = jwtDecode<JwtPayload>(token);
         if (decoded.exp && decoded.exp * 1000 < Date.now()) {
