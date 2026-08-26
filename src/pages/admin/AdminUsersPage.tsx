@@ -9,13 +9,13 @@ export const AdminUsersPage: React.FC = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Modal State
+  // Modal State - Default to Mentor role
   const [modalOpen, setModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [globalRole, setGlobalRole] = useState<GlobalRole>('Member');
+  const [globalRole, setGlobalRole] = useState<GlobalRole>('Mentor');
 
   useEffect(() => {
     void fetchUsers();
@@ -60,7 +60,7 @@ export const AdminUsersPage: React.FC = () => {
       setFullName('');
       setEmail('');
       setPassword('');
-      setGlobalRole('Member');
+      setGlobalRole('Mentor');
       await fetchUsers();
     } catch {
       alert('Không thể tạo tài khoản người dùng lúc này.');
@@ -138,6 +138,8 @@ export const AdminUsersPage: React.FC = () => {
                           ? 'bg-amber-100 text-amber-800 border border-amber-300'
                           : u.globalRole === 'LabManager'
                           ? 'bg-teal-100 text-teal-800 border border-teal-300'
+                          : u.globalRole === 'Mentor'
+                          ? 'bg-purple-100 text-purple-800 border border-purple-300'
                           : 'bg-slate-100 text-slate-700 border border-slate-300'
                       }`}>
                         {u.globalRole}
@@ -152,6 +154,7 @@ export const AdminUsersPage: React.FC = () => {
                       >
                         <option value="Visitor">Visitor</option>
                         <option value="Member">Member</option>
+                        <option value="Mentor">Mentor</option>
                         <option value="LabManager">LabManager</option>
                         <option value="Admin">Admin</option>
                       </select>
@@ -216,9 +219,8 @@ export const AdminUsersPage: React.FC = () => {
                 onChange={(e) => setGlobalRole(e.target.value as GlobalRole)}
                 className="form-field"
               >
-                <option value="Member">Member (Thành viên)</option>
+                <option value="Mentor">Mentor (Cố vấn chuyên gia)</option>
                 <option value="LabManager">LabManager (Quản lý Lab)</option>
-                <option value="Admin">Admin (Quản trị viên)</option>
               </select>
             </div>
 
