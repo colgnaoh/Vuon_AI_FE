@@ -45,7 +45,7 @@ export const LabsPage: React.FC = () => {
         <ErrorState message={error} onRetry={fetchLabs} />
       ) : (
         <div className="space-y-8">
-          {labs.map((lab) => (
+          {(labs || []).map((lab) => (
             <div
               key={lab.id}
               className="tech-card bg-[var(--paper-bright)] border border-[var(--line)] rounded-2xl overflow-hidden hover:border-[var(--accent)] transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 shadow-[var(--shadow-paper)]"
@@ -107,7 +107,7 @@ export const LabsPage: React.FC = () => {
                   <div>
                     <div className="text-[0.65rem] font-mono font-bold text-[var(--ink-soft)] uppercase tracking-wider mb-2">Trang thiết bị nổi bật:</div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {lab.facilities.map((fac, idx) => (
+                      {(lab.facilities || []).map((fac, idx) => (
                         <div key={idx} className="flex items-center gap-2 text-xs text-[var(--ink)]">
                           <CheckCircle2 className="w-3.5 h-3.5 text-[var(--accent)] shrink-0" />
                           <span>{fac}</span>

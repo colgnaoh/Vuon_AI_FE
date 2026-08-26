@@ -68,7 +68,7 @@ export const eventService = {
   async getEvents(category?: string): Promise<TechEvent[]> {
     try {
       const response = await apiClient.get('/events', { params: { category } });
-      return response.data;
+      return Array.isArray(response.data) ? response.data : mockEvents;
     } catch {
       if (!category || category === 'All') return mockEvents;
       return mockEvents.filter((e) => e.category.toLowerCase() === category.toLowerCase());

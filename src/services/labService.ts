@@ -47,7 +47,7 @@ export const labService = {
   async getLabs(): Promise<Lab[]> {
     try {
       const response = await apiClient.get('/labs');
-      return response.data;
+      return Array.isArray(response.data) ? response.data : mockLabs;
     } catch {
       return mockLabs;
     }
