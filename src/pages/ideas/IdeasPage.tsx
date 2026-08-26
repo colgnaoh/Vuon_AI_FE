@@ -35,14 +35,14 @@ export const IdeasPage: React.FC = () => {
         </div>
       </header>
 
-      {loading ? <LoadingState message="Loading project ideas..." /> : error ? <ErrorState message={error} onRetry={fetchIdeas} /> : ideas.length === 0 ? <div className="empty-state"><p>No ideas have been posted yet. Be the first.</p></div> : (
+      {loading ? <LoadingState message="Loading project ideas..." /> : error ? <ErrorState message={error} onRetry={fetchIdeas} /> : (!ideas || ideas.length === 0) ? <div className="empty-state"><p>No ideas have been posted yet. Be the first.</p></div> : (
         <div className="resource-grid">
-          {ideas.map((idea) => (
+          {(ideas || []).map((idea) => (
             <Link key={idea.id} to={`/ideas/${idea.id}`} className="tech-card resource-card idea-card group">
               <div>
                 <h2 className="text-3xl">{idea.title}</h2>
                 <p>{idea.summary}</p>
-                <div className="mt-5 flex flex-wrap gap-1.5">{idea.requiredTech.map((tech) => <span key={tech} className="tag">{tech}</span>)}</div>
+                <div className="mt-5 flex flex-wrap gap-1.5">{(idea.requiredTech || []).map((tech) => <span key={tech} className="tag">{tech}</span>)}</div>
               </div>
             </Link>
           ))}

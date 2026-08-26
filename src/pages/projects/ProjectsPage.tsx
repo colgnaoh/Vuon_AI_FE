@@ -66,13 +66,13 @@ export const ProjectsPage: React.FC = () => {
         {categories.map((category) => <button key={category} type="button" onClick={() => setSelectedCategory(category)} aria-pressed={selectedCategory === category} className="filter-chip">{category}</button>)}
       </div>
 
-      {loading ? <LoadingState message="Loading projects..." /> : error ? <ErrorState message={error} onRetry={fetchProjects} /> : projects.length === 0 ? <div className="empty-state"><p>No projects match this field.</p></div> : (
+      {loading ? <LoadingState message="Loading projects..." /> : error ? <ErrorState message={error} onRetry={fetchProjects} /> : (!projects || projects.length === 0) ? <div className="empty-state"><p>No projects match this field.</p></div> : (
         <div className="resource-grid !grid-cols-1 md:!grid-cols-2">
-          {projects.map((project) => <Link key={project.id} to={`/projects/${project.id}`} className="tech-card resource-card project-card group">
+          {(projects || []).map((project) => <Link key={project.id} to={`/projects/${project.id}`} className="tech-card resource-card project-card group">
             <div>
               <h2 className="mt-6 text-3xl">{project.title}</h2>
               <p>{project.summary}</p>
-              <div className="mt-5 flex flex-wrap gap-1.5">{project.techStack.map((tech) => <span key={tech} className="tag">{tech}</span>)}</div>
+              <div className="mt-5 flex flex-wrap gap-1.5">{(project.techStack || []).map((tech) => <span key={tech} className="tag">{tech}</span>)}</div>
             </div>
           </Link>)}
         </div>

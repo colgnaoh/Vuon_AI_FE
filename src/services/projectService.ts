@@ -72,7 +72,7 @@ export const projectService = {
   async getProjects(category?: string): Promise<Project[]> {
     try {
       const response = await apiClient.get('/projects', { params: { category } });
-      return response.data;
+      return Array.isArray(response.data) ? response.data : mockProjects;
     } catch {
       if (!category || category === 'All') return mockProjects;
       return mockProjects.filter((p) => p.domainCategory.toLowerCase() === category.toLowerCase());

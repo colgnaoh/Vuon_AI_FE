@@ -73,7 +73,7 @@ export const ideaService = {
   async getIdeas(): Promise<Idea[]> {
     try {
       const response = await apiClient.get('/ideas');
-      return response.data;
+      return Array.isArray(response.data) ? response.data : mockIdeas;
     } catch {
       return mockIdeas;
     }

@@ -86,7 +86,7 @@ export const equipmentService = {
   async getEquipment(category?: string): Promise<Equipment[]> {
     try {
       const response = await apiClient.get('/equipment', { params: { category } });
-      return response.data;
+      return Array.isArray(response.data) ? response.data : mockEquipment;
     } catch {
       if (!category || category === 'All') return mockEquipment;
       return mockEquipment.filter((e) => e.category.toLowerCase() === category.toLowerCase());
@@ -105,7 +105,7 @@ export const equipmentService = {
   async getMyBookings(): Promise<Booking[]> {
     try {
       const response = await apiClient.get('/equipment/my-bookings');
-      return response.data;
+      return Array.isArray(response.data) ? response.data : mockBookings;
     } catch {
       return mockBookings;
     }
