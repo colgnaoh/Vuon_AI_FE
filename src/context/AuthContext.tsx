@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { User, GlobalRole } from '@/types';
+import { apiClient } from '@/services/apiClient';
 
 interface AuthContextType {
   user: User | null;
@@ -35,6 +36,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (decoded.exp && decoded.exp * 1000 < Date.now()) {
           // Token expired
           logout();
+        } else {
+          // Auto-sync real profile role from Backend
+          apiClient.get('/profiles/me').then(res => {
+            if (res.data) {
+              const p = res.data;
+              const updatedUser: User = {
+                id: p.id,
+                email: p.email,
+                fullName: p.fullName || user?.fullName || 'User',
+                globalRole: p.globalRole || 'Member',
+                avatarUrl: p.avatarUrl || user?.avatarUrl,
+              };
+              setUser(updatedUser);
+              localStorage.setItem('vuon_user', JSON.stringify(updatedUser));
+            }
+          }).catch(() => {
+            // Ignore error if BE is unreachable or preflight CORS failed
+          });
         }
       } catch (e) {
         console.warn('Invalid token format');
