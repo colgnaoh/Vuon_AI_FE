@@ -71,25 +71,11 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handlePresetLogin = async (presetUser: typeof DEMO_PRESETS[0]['user']) => {
-    setLoading(true);
-    setError('');
-    try {
-      const fakeToken = 'mock-jwt-token-vuon-ai-space-' + Date.now();
-      login(fakeToken, presetUser);
-
-      if (presetUser.globalRole === 'Admin' || presetUser.globalRole === 'LabManager') {
-        navigate('/admin/dashboard');
-      } else if (presetUser.id === 'men-01') {
-        navigate('/mentor/dashboard');
-      } else {
-        navigate('/profile/me');
-      }
-    } catch {
-      setError('Đăng nhập demo thất bại.');
-    } finally {
-      setLoading(false);
-    }
+  const handlePresetLogin = (presetUser: typeof DEMO_PRESETS[0]['user']) => {
+    setActiveTab('login');
+    setLoginEmail(presetUser.email);
+    setLoginPassword('');
+    setError('Vui lòng nhập mật khẩu thật để đăng nhập qua hệ thống Supabase.');
   };
 
   return (
