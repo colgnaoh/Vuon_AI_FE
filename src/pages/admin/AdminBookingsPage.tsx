@@ -69,49 +69,49 @@ export const AdminBookingsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-5">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-white">Quản lý Phê duyệt Đơn mượn Thiết bị</h1>
-          <p className="text-sm text-gray-400 mt-1">Duyệt hoặc từ chối các yêu cầu mượn tài nguyên phần cứng trong phòng Lab.</p>
+          <h1 className="text-2xl font-extrabold text-slate-900">Quản lý Phê duyệt Đơn mượn Thiết bị</h1>
+          <p className="text-xs text-slate-600 mt-1">Duyệt hoặc từ chối các yêu cầu mượn tài nguyên phần cứng trong phòng Lab.</p>
         </div>
       </header>
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-gray-900/60 border border-gray-800 rounded-2xl p-4">
-          <div className="text-xs text-gray-400">Chờ phê duyệt</div>
-          <div className="text-2xl font-extrabold text-amber-400 mt-1">
+        <div className="tech-card p-4">
+          <div className="text-xs font-mono font-bold text-slate-500 uppercase">Chờ phê duyệt</div>
+          <div className="text-2xl font-extrabold text-amber-600 font-mono mt-1">
             {bookings.filter(b => b.status === 'Pending').length}
           </div>
         </div>
-        <div className="bg-gray-900/60 border border-gray-800 rounded-2xl p-4">
-          <div className="text-xs text-gray-400">Đang hoạt động</div>
-          <div className="text-2xl font-extrabold text-emerald-400 mt-1">
+        <div className="tech-card p-4">
+          <div className="text-xs font-mono font-bold text-slate-500 uppercase">Đang hoạt động</div>
+          <div className="text-2xl font-extrabold text-emerald-600 font-mono mt-1">
             {bookings.filter(b => b.status === 'Active').length}
           </div>
         </div>
-        <div className="bg-gray-900/60 border border-gray-800 rounded-2xl p-4">
-          <div className="text-xs text-gray-400">Đã trả / Lịch sử</div>
-          <div className="text-2xl font-extrabold text-blue-400 mt-1">
+        <div className="tech-card p-4">
+          <div className="text-xs font-mono font-bold text-slate-500 uppercase">Đã trả / Lịch sử</div>
+          <div className="text-2xl font-extrabold text-blue-600 font-mono mt-1">
             {bookings.filter(b => b.status === 'Returned' || b.status === 'ReturnedLate').length}
           </div>
         </div>
-        <div className="bg-gray-900/60 border border-gray-800 rounded-2xl p-4">
-          <div className="text-xs text-gray-400">Tổng đơn đăng ký</div>
-          <div className="text-2xl font-extrabold text-white mt-1">{bookings.length}</div>
+        <div className="tech-card p-4">
+          <div className="text-xs font-mono font-bold text-slate-500 uppercase">Tổng đơn đăng ký</div>
+          <div className="text-2xl font-extrabold text-slate-900 font-mono mt-1">{bookings.length}</div>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 border-b border-gray-800 pb-3">
+      <div className="flex gap-2 border-b border-slate-200 pb-3">
         {['Pending', 'Active', 'History'].map((st) => (
           <button
             key={st}
             onClick={() => setFilterStatus(st)}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               filterStatus === st
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                : 'bg-gray-900/60 text-gray-400 hover:text-white border border-gray-800'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'bg-white text-slate-600 hover:text-emerald-700 hover:bg-slate-50 border border-slate-200'
             }`}
           >
             {st === 'Pending' ? 'Chờ duyệt' : st === 'Active' ? 'Đang mượn' : 'Lịch sử trả / hủy'}
@@ -124,14 +124,14 @@ export const AdminBookingsPage: React.FC = () => {
       ) : error ? (
         <ErrorState message={error} onRetry={fetchBookings} />
       ) : filteredBookings.length === 0 ? (
-        <div className="p-12 text-center border border-dashed border-gray-800 rounded-2xl">
-          <p className="text-gray-400 text-sm">Không có đơn mượn nào ở trạng thái này.</p>
+        <div className="p-12 text-center border border-dashed border-slate-300 rounded-2xl bg-white">
+          <p className="text-slate-500 text-xs font-mono">Không có đơn mượn nào ở trạng thái này.</p>
         </div>
       ) : (
-        <div className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden">
+        <div className="tech-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-300">
-              <thead className="bg-gray-950/80 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-800">
+            <table className="w-full text-left text-sm text-slate-700">
+              <thead className="bg-slate-50 text-xs font-mono font-bold text-slate-600 uppercase tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="px-6 py-4">Thiết bị</th>
                   <th className="px-6 py-4">Người mượn</th>
@@ -141,33 +141,33 @@ export const AdminBookingsPage: React.FC = () => {
                   <th className="px-6 py-4 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/80">
+              <tbody className="divide-y divide-slate-200">
                 {filteredBookings.map((b) => (
-                  <tr key={b.id} className="hover:bg-gray-800/40 transition-colors">
-                    <td className="px-6 py-4 font-bold text-white flex items-center gap-2">
-                      <Package className="w-4 h-4 text-blue-400 shrink-0" />
+                  <tr key={b.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="px-6 py-4 font-bold text-slate-900 flex items-center gap-2">
+                      <Package className="w-4 h-4 text-emerald-600 shrink-0" />
                       {b.equipmentName}
                     </td>
-                    <td className="px-6 py-4 text-gray-300">
+                    <td className="px-6 py-4 text-slate-700">
                       <div className="flex items-center gap-1.5">
-                        <User className="w-3.5 h-3.5 text-gray-400" />
+                        <User className="w-3.5 h-3.5 text-slate-400" />
                         <span>{b.userName}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-xs font-mono text-gray-400">
+                    <td className="px-6 py-4 text-xs font-mono text-slate-600">
                       <div>{b.startDate}</div>
-                      <div className="text-gray-500">đến {b.endDate}</div>
+                      <div className="text-slate-400">đến {b.endDate}</div>
                     </td>
-                    <td className="px-6 py-4 text-xs text-gray-300 max-w-xs truncate">
+                    <td className="px-6 py-4 text-xs text-slate-600 max-w-xs truncate">
                       {b.purpose}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-bold ${
                         b.status === 'Pending'
-                          ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                          ? 'bg-amber-100 text-amber-800 border border-amber-300'
                           : b.status === 'Active'
-                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                          : 'bg-gray-800 text-gray-400'
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                          : 'bg-slate-100 text-slate-700 border border-slate-300'
                       }`}>
                         {b.status}
                       </span>
@@ -178,20 +178,20 @@ export const AdminBookingsPage: React.FC = () => {
                           <button
                             onClick={() => handleApprove(b.id)}
                             disabled={processingId === b.id}
-                            className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg transition-all flex items-center gap-1"
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-xs transition-all flex items-center gap-1"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5" /> Duyệt
                           </button>
                           <button
                             onClick={() => setRejectId(b.id)}
                             disabled={processingId === b.id}
-                            className="bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1"
+                            className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1"
                           >
                             <XCircle className="w-3.5 h-3.5" /> Từ chối
                           </button>
                         </div>
                       ) : (
-                        <span className="text-xs text-gray-500">—</span>
+                        <span className="text-xs text-slate-400 font-mono">—</span>
                       )}
                     </td>
                   </tr>
@@ -204,10 +204,10 @@ export const AdminBookingsPage: React.FC = () => {
 
       {/* Reject Modal */}
       {rejectId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 max-w-md w-full">
-            <h3 className="text-lg font-bold text-white mb-2">Từ chối đơn đăng ký mượn</h3>
-            <p className="text-xs text-gray-400 mb-4">Vui lòng nhập lý do từ chối để gửi thông báo cho thành viên.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-md w-full shadow-xl">
+            <h3 className="text-lg font-extrabold text-slate-900 mb-1">Từ chối đơn đăng ký mượn</h3>
+            <p className="text-xs text-slate-600 mb-4">Vui lòng nhập lý do từ chối để gửi thông báo cho thành viên.</p>
             <form onSubmit={handleRejectSubmit} className="space-y-4">
               <textarea
                 required
@@ -215,19 +215,19 @@ export const AdminBookingsPage: React.FC = () => {
                 placeholder="Ví dụ: Thiết bị đang trong đợt bảo trì định kỳ..."
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
-                className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
               />
-              <div className="flex justify-end gap-3">
+              <div className="flex justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setRejectId(null)}
-                  className="px-4 py-2 rounded-xl text-xs text-gray-400 border border-gray-800"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-red-600 text-white text-xs font-semibold shadow-lg shadow-red-600/25"
+                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-sm transition-colors"
                 >
                   Xác nhận từ chối
                 </button>

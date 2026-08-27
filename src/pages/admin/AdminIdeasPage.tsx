@@ -53,9 +53,9 @@ export const AdminIdeasPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <header className="border-b border-gray-800 pb-5">
-        <h1 className="text-2xl font-bold text-white">Quản lý Phê duyệt Ý tưởng Dự án</h1>
-        <p className="text-sm text-gray-400 mt-1">Duyệt đề xuất ý tưởng của thành viên trước khi công khai lên Idea Board.</p>
+      <header className="border-b border-slate-200 pb-5">
+        <h1 className="text-2xl font-extrabold text-slate-900">Quản lý Phê duyệt Ý tưởng Dự án</h1>
+        <p className="text-xs text-slate-600 mt-1">Duyệt đề xuất ý tưởng của thành viên trước khi công khai lên Idea Board.</p>
       </header>
 
       {loading ? (
@@ -63,14 +63,14 @@ export const AdminIdeasPage: React.FC = () => {
       ) : error ? (
         <ErrorState message={error} onRetry={fetchIdeas} />
       ) : ideas.length === 0 ? (
-        <div className="p-12 text-center border border-dashed border-gray-800 rounded-2xl">
-          <p className="text-gray-400 text-sm">Chưa có ý tưởng nào đăng ký.</p>
+        <div className="p-12 text-center border border-dashed border-slate-300 rounded-2xl bg-white">
+          <p className="text-slate-500 text-xs font-mono">Chưa có ý tưởng nào đăng ký.</p>
         </div>
       ) : (
-        <div className="bg-gray-900/60 border border-gray-800 rounded-2xl overflow-hidden">
+        <div className="tech-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-300">
-              <thead className="bg-gray-950/80 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-800">
+            <table className="w-full text-left text-sm text-slate-700">
+              <thead className="bg-slate-50 text-xs font-mono font-bold text-slate-600 uppercase tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="px-6 py-4">Tên Ý tưởng</th>
                   <th className="px-6 py-4">Tác giả</th>
@@ -79,38 +79,38 @@ export const AdminIdeasPage: React.FC = () => {
                   <th className="px-6 py-4 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/80">
+              <tbody className="divide-y divide-slate-200">
                 {ideas.map((idea) => (
-                  <tr key={idea.id} className="hover:bg-gray-800/40 transition-colors">
-                    <td className="px-6 py-4 font-bold text-white">
+                  <tr key={idea.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="px-6 py-4 font-bold text-slate-900">
                       <div className="flex items-center gap-2">
-                        <Lightbulb className="w-4 h-4 text-amber-400 shrink-0" />
+                        <Lightbulb className="w-4 h-4 text-amber-500 shrink-0" />
                         <div>
-                          <div>{idea.title}</div>
-                          <div className="text-xs text-gray-400 font-normal line-clamp-1 mt-0.5">{idea.summary}</div>
+                          <div className="text-slate-900 font-extrabold">{idea.title}</div>
+                          <div className="text-xs text-slate-500 font-normal line-clamp-1 mt-0.5">{idea.summary}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-300">
+                    <td className="px-6 py-4 text-slate-700">
                       <div className="flex items-center gap-1.5">
-                        <User className="w-3.5 h-3.5 text-gray-400" />
+                        <User className="w-3.5 h-3.5 text-slate-400" />
                         <span>{idea.authorName}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1">
                         {idea.requiredTech.map(tech => (
-                          <span key={tech} className="bg-gray-950 text-gray-300 text-[10px] px-2 py-0.5 rounded border border-gray-800">
+                          <span key={tech} className="bg-slate-100 text-slate-800 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-slate-200">
                             {tech}
                           </span>
                         ))}
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-bold ${
                         idea.status === 'Open'
-                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                          : 'bg-gray-800 text-gray-400'
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                          : 'bg-slate-100 text-slate-700 border border-slate-300'
                       }`}>
                         {idea.status}
                       </span>
@@ -120,14 +120,14 @@ export const AdminIdeasPage: React.FC = () => {
                         <button
                           onClick={() => handleApprove(idea.id)}
                           disabled={processingId === idea.id}
-                          className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1"
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-xs transition-all flex items-center gap-1"
                         >
                           <CheckCircle2 className="w-3.5 h-3.5" /> Phê duyệt
                         </button>
                         <button
                           onClick={() => handleReject(idea.id)}
                           disabled={processingId === idea.id}
-                          className="bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1"
+                          className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1"
                         >
                           <XCircle className="w-3.5 h-3.5" /> Từ chối
                         </button>
